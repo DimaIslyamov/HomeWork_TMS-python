@@ -1,3 +1,15 @@
+# Перевести десятичное в двоичную и двоичное в десятичную систему
+numb_one = int(input("Enter a decimal number: "))
+print(f"In binary: {bin(numb_one)[2:]}")
+
+numb_two = input("Enter binary number: ")
+print(f"In decimal: {int(numb_two, base=2)}")
+
+
+
+print("----------------------------------")
+
+
 # Написать первую программу: программа должна выводить в консоль несколько строчек
 print("Hello, World")
 print("It is my first python program")
@@ -12,9 +24,9 @@ print("----------------------------------")
 user_name = input("Введите ваше имя: ")
 print(f"Приветствую, {user_name}!")
 
-travel_distance = int(input("Введите расстояние поездки (km): "))
-fuel_consumption = int(input("Введите расход топлива вашего автомобиля на 100км: "))
-gasoline_prices = int(input("Введите стоимость 1/литра бензина в вашем регионе: "))
+travel_distance = float(input("Введите расстояние поездки (km): "))
+fuel_consumption = float(input("Введите расход топлива вашего автомобиля на 100км: "))
+gasoline_prices = float(input("Введите стоимость 1/литра бензина в вашем регионе: "))
 
 amount_of_gasoline = travel_distance * fuel_consumption / 100
 total_coast = gasoline_prices * amount_of_gasoline / 1
