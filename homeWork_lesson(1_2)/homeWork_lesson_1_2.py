@@ -5,9 +5,7 @@ print(f"In binary: {bin(numb_one)[2:]}")
 numb_two = input("Enter binary number: ")
 print(f"In decimal: {int(numb_two, base=2)}")
 
-
-
-print("----------------------------------")
+print("-" * 20)
 
 
 # Написать первую программу: программа должна выводить в консоль несколько строчек
@@ -16,8 +14,7 @@ print("It is my first python program")
 print("And it is the end of my program")
 print("Bye-bye")
 
-
-print("----------------------------------")
+print("-" * 20)
 
 
 # Написать программу на Python, которая запрашивает у пользователя данные и производит расчеты.
