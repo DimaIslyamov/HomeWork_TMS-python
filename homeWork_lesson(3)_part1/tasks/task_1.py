@@ -1,6 +1,6 @@
-value_one: int = 19
-value_two: int = 12
-value_three: int = 93
+value_one = int(input("Введите первое целое число: "))
+value_two = int(input("Введите второе целое число: "))
+value_three = int(input("Введите третье целое число: "))
 
 
 def get_result_at_values(val_one: int, val_two: int, val_three: int) -> str:
