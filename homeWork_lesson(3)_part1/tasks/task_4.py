@@ -9,4 +9,4 @@ text_replace_output = (
     + text_input[last_h:]
 )
 
-print(text_replace_output)
+print(f"Измененный текст: {text_replace_output}")
