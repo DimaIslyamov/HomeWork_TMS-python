@@ -11,15 +11,32 @@ app.title("Home Work")
 
 planet_one = None
 
-# get and clean_entrise for def
-# ...... /// her
+
+# get and clean_entry for def
+def get_tale_one_entris():
+    return (float(tab_one_entry_i.get()),
+            float(tab_one_entry_s.get()),
+            int(tab_one_entry_n.get()))
+
+def clean_table_one_entris():
+    return (tab_one_entry_i.delete(0, "end"),
+            tab_one_entry_s.delete(0, "end"),
+            tab_one_entry_n.delete(0, "end"))
+
+
+def get_table_two_entris():
+    return (float(tab_two_r.get()),
+            float(tab_two_v.get()))
+
+def clean_table_two_entris():
+    return (tab_two_r.delete(0, "end"),
+            tab_two_v.delete(0, "end"))
+
 
 # Button functions
 def calculation_payment_button_clicked():
     try:
-        i = float(tab_one_entry_i.get())
-        s = float(tab_one_entry_s.get())
-        n = int(tab_one_entry_n.get())
+        i, s, n = get_tale_one_entris()
 
         (monthly_payment,
          user_total_count,
@@ -31,9 +48,7 @@ def calculation_payment_button_clicked():
             f"Всего выплат: {user_total_count:.2f}\n"
             f"Переплата: {overpayment_amount:.2f}")
 
-        tab_one_entry_i.delete(0, "end")
-        tab_one_entry_s.delete(0, "end")
-        tab_one_entry_n.delete(0, "end")
+        clean_table_one_entris()
 
     except ValueError:
         tab_one_label.configure(text="Введите числовые значения")
@@ -43,14 +58,12 @@ def calculation_of_interstellar_button_clicked():
     global planet_one
 
     try:
-        r = float(tab_two_r.get())
-        v = float(tab_two_v.get())
+        r, v = get_table_two_entris()
 
         if planet_one is None:
             planet_one = (r, v)
 
-            tab_two_r.delete(0, "end")
-            tab_two_v.delete(0, "end")
+            clean_table_two_entris()
 
             tab_two_label.configure(text="Первая планета сохранена. Введите данные второй")
 
@@ -65,8 +78,7 @@ def calculation_of_interstellar_button_clicked():
                      f"Длинна года на второй планете: {planet_2:.4f}\n"
                      f"На первой планете год длинна чем на второй? : {'Да' if planet_1 > planet_2 else 'Нет'}")
 
-            tab_two_r.delete(0, "end")
-            tab_two_v.delete(0, "end")
+            clean_table_two_entris()
 
             planet_one = None
 
