@@ -11,6 +11,8 @@ app.title("Home Work")
 
 planet_one = None
 
+# get and clean_entrise for def
+# ...... /// her
 
 # Button functions
 def calculation_payment_button_clicked():
@@ -24,7 +26,7 @@ def calculation_payment_button_clicked():
          overpayment_amount) = calculation_of_payments(interest_rate=i,
                                                        loan_amount=s,
                                                        months_count=n)
-        tab_oneLabel.configure(
+        tab_one_label.configure(
             text=f"Ежемесячный платёж: {monthly_payment:.2f}\n"
             f"Всего выплат: {user_total_count:.2f}\n"
             f"Переплата: {overpayment_amount:.2f}")
@@ -34,7 +36,7 @@ def calculation_payment_button_clicked():
         tab_one_entry_n.delete(0, "end")
 
     except ValueError:
-        tab_oneLabel.configure(text="Пожалуйста введите 'Цифры'")
+        tab_one_label.configure(text="Введите числовые значения")
 
 
 def calculation_of_interstellar_button_clicked():
@@ -61,7 +63,7 @@ def calculation_of_interstellar_button_clicked():
             tab_two_label.configure(
                 text=f"Длинна года на первой планете: {planet_1:.4f}\n"
                      f"Длинна года на второй планете: {planet_2:.4f}\n"
-                     f"На первой планете год длинна чем на второй? : {"Да" if planet_1 > planet_2 else "Нет"}")
+                     f"На первой планете год длинна чем на второй? : {'Да' if planet_1 > planet_2 else 'Нет'}")
 
             tab_two_r.delete(0, "end")
             tab_two_v.delete(0, "end")
@@ -86,49 +88,42 @@ table_view.pack(pady=15, padx=15)
 tab_one = table_view.add("Подсчет Кредитования ")
 tab_two = table_view.add("Интерстеллар ")
 
-# Create table one inputs, label and button
-tab_oneLabel = customtkinter.CTkLabel(master=tab_one,
-                                      text="Играл с кредитами – проиграл")
-tab_oneLabel.pack(pady=10)
-
+# === Create TAB 1 ===
+tab_one_label = customtkinter.CTkLabel(master=tab_one,
+                                       text="Играл с кредитами – проиграл")
 tab_one_entry_i = customtkinter.CTkEntry(master=tab_one,
                                          placeholder_text="Введите годовую ставку",
                                          width=200)
-tab_one_entry_i.pack(pady=10, padx=10)
-
 tab_one_entry_s = customtkinter.CTkEntry(master=tab_one,
                                          placeholder_text="Сумма займа",
                                          width=200)
-tab_one_entry_s.pack(pady=10, padx=10)
-
 tab_one_entry_n = customtkinter.CTkEntry(master=tab_one,
                                          placeholder_text="На сколько месяцев кредит",
                                          width=200)
-tab_one_entry_n.pack(pady=10, padx=10)
-
 tab_one_button = customtkinter.CTkButton(master=tab_one,
                                          text="Подсчитать",
                                          command=calculation_payment_button_clicked)
-tab_one_button.pack(pady=20)
 
-# Create table two label,inputs and button
+for entry_one in (tab_one_label, tab_one_entry_i,
+                  tab_one_entry_s, tab_one_entry_n,
+                  tab_one_button):
+    entry_one.pack(pady=10, padx=10)
+
+# === Create TAB 2 ===
 tab_two_label = customtkinter.CTkLabel(master=tab_two,
                                        text="Введите данные первой планеты")
-tab_two_label.pack(pady=10)
-
 tab_two_r = customtkinter.CTkEntry(master=tab_two,
                                    placeholder_text="Радиус планеты",
                                    width=200)
-tab_two_r.pack(pady=10, padx=10)
-
 tab_two_v = customtkinter.CTkEntry(master=tab_two,
                                    placeholder_text="Орбитальная скорость",
                                    width=200)
-tab_two_v.pack(pady=10, padx=10)
-
 tab_two_button = customtkinter.CTkButton(master=tab_two,
                                          text="Ввод",
                                          command=calculation_of_interstellar_button_clicked)
-tab_two_button.pack(pady=20)
+
+for entry_two in (tab_two_label, tab_two_r, tab_two_v,
+                  tab_two_button):
+    entry_two.pack(pady=10, padx=10)
 
 app.mainloop()
