@@ -1,6 +1,6 @@
 import customtkinter
-from task_2.calculation_of_payments import calculation_of_payments
-from task_3.interstellar_calculation import calculate_planets_year
+from task_2 import calculation_of_payments
+from task_3 import calculate_planets_year
 
 customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("green")
@@ -12,7 +12,6 @@ app.title("Home Work")
 planet_one = None
 
 
-# get and clean_entry for def
 def get_tale_one_entris():
     return (float(tab_one_entry_i.get()),
             float(tab_one_entry_s.get()),
@@ -33,7 +32,6 @@ def clean_table_two_entris():
             tab_two_v.delete(0, "end"))
 
 
-# Button functions
 def calculation_payment_button_clicked():
     try:
         i, s, n = get_tale_one_entris()

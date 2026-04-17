@@ -1,0 +1,1 @@
+from .interstellar_calculation import calculate_planets_year
