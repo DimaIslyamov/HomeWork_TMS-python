@@ -1,13 +1,19 @@
 n = int(input("Сумма телефона: "))
 k = int(input("Какую сумму вы можете откладывать за день: "))
 
-total: int = 0
-days: int = 0
 
-while total < n:
-    days += 1
+def count_days_for_masha(*, telephone_sum: int, days_count_sum: int) -> int:
+    total: int = 0
+    days: int = 0
 
-    if days % 7 != 0:
-        total += k
+    while total < n:
+        days += 1
 
-print(days)
+        if days % 7 != 0:
+            total += k
+
+    return days
+
+
+task_2_result = count_days_for_masha(telephone_sum=n, days_count_sum=k)
+print(f"Количество дней для Маши: {task_2_result}")

@@ -21,11 +21,11 @@ def get_list_stats(*, input_list: list[int]) -> tuple:
 value_list = generate_random_list()
 total, minimum, maximum = get_list_stats(input_list=value_list)
 
-task_result = (f"Total: {total}\n"
+task_4_result = (f"Total: {total}\n"
                f"Minimum: {minimum}\n"
                f"Maximum: {maximum}")
 
-print(task_result)
+print(task_4_result)
 
 # === Функция через использование встроенных методов ===
 # def get_list_stats(*, input_list: list[int]) -> tuple[int, int, int]:
