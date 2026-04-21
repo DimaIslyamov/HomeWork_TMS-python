@@ -6,11 +6,11 @@ def count_days_for_masha(*, telephone_sum: int, days_count_sum: int) -> int:
     total: int = 0
     days: int = 0
 
-    while total < n:
+    while total < telephone_sum:
         days += 1
 
         if days % 7 != 0:
-            total += k
+            total += days_count_sum
 
     return days
 
