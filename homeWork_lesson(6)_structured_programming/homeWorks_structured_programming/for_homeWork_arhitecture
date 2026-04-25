@@ -1,0 +1,27 @@
+python_homework/
+│
+├── recursion_algorithms/
+│   ├── binary_search_recursive.py   # задача 1
+│   └── decimal_to_binary.py         # задача 2
+│
+├── number_algorithms/
+│   ├── prime_check.py               # задача 3
+│   └── gcd_euclid.py                # задача 4
+│
+├── cryptography/
+│   ├── caesar_cipher.py             # задача 5
+│   └── vigenere_cipher.py           # задача 6*
+│
+├── matrix_basics/
+│   ├── matrix_generator.py          # задача 7
+│   ├── min_max_indexes.py           # задача 8
+│   ├── column_percentages.py        # задача 9
+│   └── diagonal_sums.py             # задача 13
+│
+├── matrix_operations/
+│   ├── multiply_by_k_column.py      # задача 10*
+│   ├── sum_with_l_row.py            # задача 11*
+│   └── search_value_columns.py      # задача 12
+│
+└── matrix_logic/
+    └── parity_column.py             # задача 14
