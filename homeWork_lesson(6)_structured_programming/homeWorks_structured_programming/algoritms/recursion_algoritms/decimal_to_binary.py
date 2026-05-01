@@ -20,7 +20,7 @@ def decimal_to_bin_iterative(decimal_value: int) -> str:
 # === Запуск обоих вариантов ===
 user_value = int(input("Введите десятичное значение: "))
 
-variant_1 = decimal_to_bin(user_value)
-variant_2 = decimal_to_bin_iterative(user_value)
+variant_1 = decimal_to_bin(decimal_value=user_value)
+variant_2 = decimal_to_bin_iterative(decimal_value=user_value)
 
 print(f"Через рекурсию - {variant_1}, Через Итеративный вариант - {variant_2}")

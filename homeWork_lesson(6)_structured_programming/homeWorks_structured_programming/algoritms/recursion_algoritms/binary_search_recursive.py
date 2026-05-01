@@ -1,4 +1,5 @@
-def binary_search_recursive(arr: list[int], target: int,
+def binary_search_recursive(arr: list[int],
+                            target: int,
                             low: int, high: int) -> int | None:
     if low > high:
         return None
@@ -17,6 +18,8 @@ def binary_search_recursive(arr: list[int], target: int,
 array_range = range(1, 20)
 target_value = 6
 
-index = binary_search_recursive(list(array_range), target_value,
-                                0, len(array_range) - 1)
+index = binary_search_recursive(arr=list(array_range),
+                                target=target_value,
+                                low=0,
+                                high=len(array_range) - 1)
 print(index)
