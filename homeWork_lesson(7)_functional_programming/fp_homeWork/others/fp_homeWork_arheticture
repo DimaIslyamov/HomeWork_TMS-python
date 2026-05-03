@@ -1,0 +1,19 @@
+fp_homework/
+│
+├── main.py
+├── tasks/
+│   ├── __init__.py
+│   ├── task1_map_to_string.py
+│   ├── task2_filter_positive.py
+│   ├── task3_filter_palindromes.py
+│   ├── task4_timer_decorator.py
+│   └── task5_flat_area.py
+│
+├── utils/
+│   ├── __init__.py
+│   ├── decorators.py
+│   └── helpers.py
+│
+└── tests/   # (опционально, но очень круто)
+    ├── test_task1.py
+    └── ...
