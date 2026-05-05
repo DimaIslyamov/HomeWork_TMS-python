@@ -1,46 +1,43 @@
-def encrypt_vigenere(massage: str, key: str) -> str:
-    alphabet: str = "abcdefghijklmnopqrstuvwxyz"
-    result: str = ""
-    key_index: int = 0 # отдельный индекс ключа
-
-    for i in range(len(massage)):
-        char = massage[i]  # Берём букву сообщения
-
-        if char in alphabet:
-            key_char = key[key_index % len(key)]  # Берём букву ключа
-                                            # Ключ зацикливается
-            index = alphabet.index(char)
-            shift = alphabet.index(key_char)  # получаем сдвиг
-
-            new_index = (index + shift) % 26  # шифруем
-            result += alphabet[new_index]
-
-            key_index += 1 # Двигаем только на буквах
-        else:
-            result += char
-
-    return result
+import string
+from enum import Enum
 
 
-def decrypt_vigenere(massage: str, key: str) -> str:
-    alphabet: str = "abcdefghijklmnopqrstuvwxyz"
-    result: str = ""
-    key_index: int = 0
+class Mode(Enum):
+    ENCRYPT = "encrypt"
+    DECRYPT = "decrypt"
 
-    for i in range(len(massage)):
-        char = massage[i]
 
-        if char in alphabet:
-            key_char = key[key_index % len(key)]
+def vigenere_cipher(text: str, key: str, mode: Mode) -> str:
+    alphabet = string.ascii_lowercase
+    n = len(alphabet)
 
-            index = alphabet.index(char)
-            shift = alphabet.index(key_char)
+    # пред расчет сдвигов ключа (ускоряет работу)
+    key_shifts = [alphabet.index(k.lower()) for k in key]
 
-            new_index = (index - shift) % 26
-            result += alphabet[new_index]
+    result = []
+    key_index = 0
 
+    for char in text:
+        is_upper = char.isupper()
+        lower_char = char.lower()
+
+        if lower_char in alphabet:
+            shift = key_shifts[key_index % len(key_shifts)]
+
+            if mode == Mode.DECRYPT:
+                shift = -shift
+
+            index = alphabet.index(lower_char)
+            new_index = (index + shift) % n
+            new_char = alphabet[new_index]
+
+            result.append(new_char.upper() if is_upper else new_char)
             key_index += 1
         else:
-            result += char
+            result.append(char)
 
-    return result
+    return "".join(result)
+
+
+print(vigenere_cipher("Hello World!", "key", Mode.ENCRYPT))
+print(vigenere_cipher("Rijvs Uyvjn!", "key", Mode.DECRYPT))
