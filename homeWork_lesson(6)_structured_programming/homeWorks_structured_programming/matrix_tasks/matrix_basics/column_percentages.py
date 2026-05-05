@@ -3,22 +3,15 @@ from homeWorks_structured_programming.matrix_tasks.matrix_basics.matrix_generato
 def analyze_matrix(matrix):
     total_sum: int = 0
     column_sums = [0] * len(matrix[0])
-    percentages = []
 
-    # подсчет суммы всех элементов
-    for row in matrix:
-        for value in row:
-            total_sum += value
-
-    # сумма столбцов
     for i in range(len(matrix)):
         for j in range(len(matrix[i])):
-            column_sums[j] += matrix[i][j]
+            value = matrix[i][j]
 
-    # проценты этих столбцов
-    for col_sum in column_sums:
-        percent = round((col_sum / total_sum) * 100, 2)
-        percentages.append(percent)
+            total_sum += value
+            column_sums[j] += value
+
+    percentages = [round((col_sum / total_sum) * 100, 2) for col_sum in column_sums]
 
     return total_sum, column_sums, percentages
 
@@ -33,4 +26,3 @@ def analyze_matrix(matrix):
 # print(total_sum)
 # print(*column_sums)
 # print(*percentages)
-

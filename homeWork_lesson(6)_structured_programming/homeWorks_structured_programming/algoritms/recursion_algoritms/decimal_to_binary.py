@@ -8,6 +8,9 @@ def decimal_to_bin(decimal_value: int) -> str:
 
 # === Итеративный вариант ===
 def decimal_to_bin_iterative(decimal_value: int) -> str:
+    if decimal_value == 0:
+        return "0"
+
     dec_str = ""
 
     while decimal_value > 0:
@@ -18,9 +21,9 @@ def decimal_to_bin_iterative(decimal_value: int) -> str:
 
 
 # === Запуск обоих вариантов ===
-user_value = int(input("Введите десятичное значение: "))
-
-variant_1 = decimal_to_bin(decimal_value=user_value)
-variant_2 = decimal_to_bin_iterative(decimal_value=user_value)
-
-print(f"Через рекурсию - {variant_1}, Через Итеративный вариант - {variant_2}")
+# user_value = int(input("Введите десятичное значение: "))
+#
+# variant_1 = decimal_to_bin(decimal_value=user_value)
+# variant_2 = decimal_to_bin_iterative(decimal_value=user_value)
+#
+# print(f"Через рекурсию - {variant_1}, Через Итеративный вариант - {variant_2}")
