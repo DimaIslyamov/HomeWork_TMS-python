@@ -1,0 +1,22 @@
+exceptions_project/
+│
+├── main.py
+│
+├── bmi/
+│   ├── __init__.py
+│   ├── calculator.py
+│   ├── validator.py
+│   ├── categories.py
+│   └── input_handler.py
+│
+├── simple_calculator/
+│   ├── __init__.py
+│   ├── operations.py
+│   ├── validator.py
+│   └── input_handler.py
+│
+├── utils/
+│   ├── __init__.py
+│   └── exceptions.py
+│
+└── README.md
