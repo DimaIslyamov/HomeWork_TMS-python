@@ -1,10 +1,10 @@
-class InvalidInputError:
-    pass
+class InvalidInputError(Exception):
+    """Ошибка неверного ввода"""
 
 
-class ValidationError:
-    pass
+class ValidationError(Exception):
+    """Ошибка проверки"""
 
 
 class InvalidOperationError:
-    pass
+    """Ошибка неверной операции"""
