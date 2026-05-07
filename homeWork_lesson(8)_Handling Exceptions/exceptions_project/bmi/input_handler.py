@@ -8,6 +8,9 @@ def parse_float(value: str) -> float:
         raise InvalidInputError("Введите корректное число")
 
 
+# - Тут явно можно оптимизировать и сделать одну функцию
+# def get_float_input(prompt: str) -> float:
+
 def get_height() -> float:
     user_height_value = input("Введите рост (в метрах): ")
     return parse_float(user_height_value)
