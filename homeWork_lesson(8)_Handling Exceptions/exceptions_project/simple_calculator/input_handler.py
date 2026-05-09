@@ -1,6 +1,5 @@
 from exceptions_project.utils import InvalidInputError
 
-# - Тут можно Объединить ввод чисел | def get_two_numbers():
 
 def parse_float(value: str) -> float:
     try:
@@ -15,4 +14,4 @@ def get_number(prompt: str) -> float:
 
 
 def get_operation() -> str:
-    return input("Выберите операцию (+, -, *, /): ")
+    return input(f"Введите операцию (+, -, *, /): ")

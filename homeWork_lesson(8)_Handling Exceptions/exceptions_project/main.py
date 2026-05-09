@@ -1,26 +1,12 @@
-from bmi.input_handler import get_height, get_weight
-from bmi.categories import get_bmi_category
-from bmi.calculator import calculate_bmi
-from bmi.validator import validate_height, validate_weight
-
-from simple_calculator.input_handler import get_number, get_operation
-from simple_calculator.operations import calculate
-from simple_calculator.validator import validate_operation
+from exceptions_project.bmi.process_bmi import process_bmi
+from exceptions_project.simple_calculator.process_calculator import process_calculate
 
 from utils.exceptions import ValidationError, InvalidInputError
 
 
-# - тут явно можно убрать операции после try и вынести в отдельный файл (operations/calculate)
 def run_bmi():
     try:
-        height = get_height()
-        weight = get_weight()
-
-        validate_height(height)
-        validate_weight(weight)
-
-        bmi = calculate_bmi(height, weight)
-        category = get_bmi_category(bmi)
+        bmi, category = process_bmi()
 
     except InvalidInputError as error:
         print(f'Ошибка ввода: {error}')
@@ -33,7 +19,7 @@ def run_bmi():
 
     else:
         print(f"Ваш ИМТ: {bmi:.2f}")
-        print(f"Категория: {category:.2f}")
+        print(f"Категория: {category.value}")
 
     finally:
         print("Всего хорошего, пока =)")
@@ -44,18 +30,7 @@ def run_bmi():
 def run_calculator():
     while True:
         try:
-            first_number = get_number("Введите первое число: ")
-            second_number = get_number("Введите второе число: ")
-
-            operation = get_operation()
-
-            validate_operation(operation)
-
-            result = calculate(
-                first_number,
-                second_number,
-                operation
-            )
+            result = process_calculate()
 
         except InvalidInputError as e:
             print(f"Ошибка ввода: {e}")
