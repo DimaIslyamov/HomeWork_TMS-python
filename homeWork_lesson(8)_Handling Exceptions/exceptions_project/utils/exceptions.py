@@ -6,5 +6,5 @@ class ValidationError(Exception):
     """Ошибка проверки"""
 
 
-class InvalidOperationError:
+class InvalidOperationError(Exception):
     """Ошибка неверной операции"""

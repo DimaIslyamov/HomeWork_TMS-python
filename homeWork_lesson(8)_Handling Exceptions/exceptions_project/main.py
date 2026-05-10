@@ -1,7 +1,7 @@
 from exceptions_project.bmi.process_bmi import process_bmi
 from exceptions_project.simple_calculator.process_calculator import process_calculate
 
-from utils.exceptions import ValidationError, InvalidInputError
+from exceptions_project.utils.exceptions import ValidationError, InvalidInputError
 
 
 def run_bmi():
@@ -25,8 +25,6 @@ def run_bmi():
         print("Всего хорошего, пока =)")
 
 
-# - тут тоже можно убрать операции после try и вынести в отдельный файл (operations/calculate)
-# в цикл добавить предложение об окончании Y / N
 def run_calculator():
     while True:
         try:

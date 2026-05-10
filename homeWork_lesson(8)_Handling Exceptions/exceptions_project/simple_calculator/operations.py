@@ -1,4 +1,5 @@
 from exceptions_project.simple_calculator.constants import Operation
+from exceptions_project.utils.exceptions import ValidationError
 
 
 OPERATORS = {
@@ -10,7 +11,10 @@ OPERATORS = {
 
 
 def calculate(a: float, b: float, operation: str) -> float:
-    assert operation in OPERATORS
+    if operation not in OPERATORS:
+        raise ValidationError("Недопустимая операция")
 
-    # OPERATORS[operation] возвращает функцию а (a, b) сразу вызывает ее
+    if operation == Operation.DIVISION.value and b == 0:
+        raise ValidationError("На ноль делить нельзя")
+
     return OPERATORS[operation](a, b)

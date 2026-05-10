@@ -1,5 +1,9 @@
-from exceptions_project.bmi.constants import (MIN_HEIGHT, MAX_HEIGHT,
-                                              MIN_WEIGHT, MAX_WEIGHT)
+from exceptions_project.bmi.constants import (
+    MAX_HEIGHT,
+    MAX_WEIGHT,
+    MIN_HEIGHT,
+    MIN_WEIGHT,
+)
 from exceptions_project.bmi.input_handler import get_float_input
 from exceptions_project.bmi.categories import get_bmi_category
 from exceptions_project.bmi.calculator import calculate_bmi

@@ -14,4 +14,4 @@ def get_number(prompt: str) -> float:
 
 
 def get_operation() -> str:
-    return input(f"Введите операцию (+, -, *, /): ")
+    return input("Введите операцию (+, -, *, /): ")
