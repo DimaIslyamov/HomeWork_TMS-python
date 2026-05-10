@@ -1,10 +1,11 @@
+import functools
 import time
 from typing import Callable
 
 
 def run_time(func: Callable):
+    @functools.wraps(func)
     def wrapper(*args, **kwargs):
-
         start = time.time()
         result = func(*args, **kwargs)
         end = time.time()
@@ -12,4 +13,5 @@ def run_time(func: Callable):
         print(f"Время выполнения функции: {end - start:.4f} секунд")
 
         return result
+
     return wrapper
