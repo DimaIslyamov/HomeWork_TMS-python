@@ -1,0 +1,10 @@
+apple banana apple orange apple
+cat dog cat bird dog cat
+python java python  csharp
+red blue red green blue red
+sun moon star sun sun moon
+hello  hello
+car bus car train bus car
+music rock jazz rock pop
+coffee tea coffee juice coffee
+code code test debug code

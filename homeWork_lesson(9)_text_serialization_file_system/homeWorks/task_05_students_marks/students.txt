@@ -1,0 +1,12 @@
+Ivanov Ivan 5
+Petrov Petr 2
+Sidorov Alexey 4
+Smirnov Dmitry 3
+Kozlov Andrey 2
+Volkov Nikita 5
+Morozov Sergey 1
+Fedorov Artem 4
+Lebedev Kirill 2
+Pavlov Egor 3
+Semenov Ilya 5
+Nikolaev Roman 2

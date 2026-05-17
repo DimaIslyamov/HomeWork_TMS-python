@@ -1,0 +1,10 @@
+apple - 3
+cat - 3
+python - 2
+red - 3
+sun - 3
+hello - 2
+car - 3
+rock - 2
+coffee - 3
+code - 3

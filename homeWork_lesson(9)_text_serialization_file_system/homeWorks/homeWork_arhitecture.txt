@@ -1,0 +1,45 @@
+homework_files/
+├── task_01_os_sorting/
+│   ├── main.py
+│   ├── source_files/
+│   │   ├── text_1.txt
+│   │   ├── text_2.txt
+│   │   ├── image_1.png
+│   │   ├── data.csv
+│   │   └── notes.docx
+│   └── sorted_files/
+│
+├── task_02_name_replace/
+│   ├── main.py
+│   ├── input.txt
+│   └── output.txt
+│
+├── task_03_most_common_word/
+│   ├── main.py
+│   ├── input.txt
+│   └── result.txt
+│
+├── task_04_stop_words/
+│   ├── main.py
+│   ├── text.txt
+│   ├── stop_words.txt
+│   └── result.txt
+│
+├── task_05_students_marks/
+│   ├── main.py
+│   └── students.txt
+│
+├── task_06_sum_numbers/
+│   ├── main.py
+│   └── input.txt
+│
+├── task_07_caesar_cipher/
+│   ├── main.py
+│   ├── input.txt
+│   └── encrypted.txt
+│
+└── task_08_json_csv/
+    ├── main.py
+    ├── employees.json
+    ├── employees.csv
+    └── backups/
