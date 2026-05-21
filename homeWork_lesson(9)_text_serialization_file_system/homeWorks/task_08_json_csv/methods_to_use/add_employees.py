@@ -1,15 +1,21 @@
-import os
+from homeWorks.task_08_json_csv.methods_to_use.work_with_files import (
+    save_employee_to_json,
+    update_json_to_csv
+)
+from homeWorks.task_08_json_csv.methods_to_use.validators import (
+    get_validated_date,
+    get_validated_full_name
+)
 
-from homeWorks.task_08_json_csv.methods_to_use.validate_date import get_validated_date
 
-
-def add_employees_date(json_path: str, csv_path: str) -> None:
-    name = input("Введите Имя и Фамилию: ").strip()
+def add_employee_date(json_path: str, csv_path: str) -> None:
+    name = get_validated_full_name("Введите Имя и Фамилию: ")
     birthday = get_validated_date(
         "Введите дату рождения (формат ДД.ММ.ГГГГ): "
     )
 
     while True:
+
         try:
             height = int(input("Введите рост (см): "))
             weight = float(input("Введите вес (кг): "))
@@ -32,5 +38,3 @@ def add_employees_date(json_path: str, csv_path: str) -> None:
         "car": car,
         "languages": languages,
     }
-
-# //// дописать -- 
