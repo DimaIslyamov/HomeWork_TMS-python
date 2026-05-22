@@ -45,7 +45,3 @@ def cezar_cipher(text: str, shift: int, mode: Mode, language: Language) -> str:
             result.append(char)
 
     return "".join(result)
-
-
-# print(cezar_cipher(text="Hello World!", shift=3, mode=Mode.ENCRYPT, language=Language.EN))
-# print(cezar_cipher(text="Khoor Zruog!", shift=3, mode=Mode.DECRYPT, language=Language.EN))

@@ -5,7 +5,7 @@ def filter_by_language(json_path: str) -> None:
     with open(json_path, 'r', encoding='utf-8') as json_file:
         employees = json.load(json_file)
 
-    search_user_by_lang = input("Введите язык программирования: ").lower()
+    search_user_by_lang = input("Введите язык программирования: ").strip().lower()
 
     filtered_employees: list = []
 
@@ -34,8 +34,10 @@ def average_height_by_year(json_path: str) -> None:
     with open(json_path, 'r', encoding='utf-8') as json_file:
         employees = json.load(json_file)
 
+    while True:
         try:
-            search_year = input("Год рождения: ")
+            search_year = int(input("Год рождения: "))
+            break
         except ValueError:
             print("Ошибка: Неверно введены значения!")
 
@@ -49,4 +51,14 @@ def average_height_by_year(json_path: str) -> None:
 
         birth_year = int(birth_year)
 
-        
+        if birth_year < search_year:
+            heights.append(employee["height"])
+
+    if not heights:
+        print("Подходящих сотрудников нет")
+    else:
+        average = sum(heights) / len(heights)
+        print(
+            f"Средний рост сотрудников, родившихся до {search_year} года: "
+            f"{average:.2f} cm"
+        )

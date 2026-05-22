@@ -1,6 +1,6 @@
 import os
 
-from homeWorks.task_07_caesar_cipher.cezar_chiper import (
+from homeWorks.task_07_caesar_cipher.chiper_cezar import (
     cezar_cipher,
     Mode,
     Language)

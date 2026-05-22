@@ -43,5 +43,17 @@
             "swift",
             "python"
         ]
+    },
+    {
+        "name": "Victoria Diachkova",
+        "birthday": "08.10.1999",
+        "height": 175,
+        "weight": 68.0,
+        "car": false,
+        "languages": [
+            "Smm",
+            "Marketing",
+            "ContentCreator"
+        ]
     }
 ]

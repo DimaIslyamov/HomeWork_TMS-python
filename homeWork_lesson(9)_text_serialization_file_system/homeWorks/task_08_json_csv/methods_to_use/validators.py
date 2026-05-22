@@ -1,9 +1,12 @@
 from datetime import datetime
 
 
-def get_validated_date(prompt: str) -> str:
+def get_validated_date(prompt: str) -> str | None:
     while True:
         date_str = input(prompt).strip()
+
+        if date_str == '0':
+            return None
 
         try:
             datetime.strptime(date_str, '%d.%m.%Y')
@@ -17,6 +20,10 @@ def get_validated_full_name(prompt: str) -> str | None:
     while True:
 
         full_name = input(prompt).strip()
+
+        if full_name == '0':
+            return None
+
         parts = full_name.split()
 
         if len(parts) != 2:
