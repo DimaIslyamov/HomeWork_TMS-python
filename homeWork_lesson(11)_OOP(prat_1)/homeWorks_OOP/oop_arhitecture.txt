@@ -1,0 +1,15 @@
+homework_oop/
+├── task_01_soda/
+│   └── main.py
+│
+├── task_02_math/
+│   └── main.py
+│
+├── task_03_car/
+│   └── main.py
+│
+├── task_04_sphere/
+│   └── main.py
+│
+└── task_05_super_str/
+    └── main.py
