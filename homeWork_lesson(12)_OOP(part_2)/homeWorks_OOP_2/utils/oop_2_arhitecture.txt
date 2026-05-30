@@ -1,0 +1,22 @@
+oop_part_2/
+│
+├── main.py
+│
+├── task_01_product_warehouse/
+│   ├── __init__.py
+│   ├── product.py
+│   ├── warehouse.py
+│   └── demo.py
+│
+├── task_02_bee_elephant/
+│   ├── __init__.py
+│   ├── bee_elephant.py
+│   └── demo.py
+│
+├── task_03_bus/
+│   ├── __init__.py
+│   ├── bus.py
+│   └── demo.py
+│
+└── utils/
+    └── __init__.py
