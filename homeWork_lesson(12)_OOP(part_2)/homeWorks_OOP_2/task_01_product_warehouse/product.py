@@ -7,7 +7,7 @@ class Product:
     def __str__(self) -> str:
         return (f"Товар : {self._name}\n"
                 f"Магазин : {self._shop_name}\n"
-                f"Ценна : {self._price_zloty} zl"
+                f"Цена : {self._price_zloty} zl"
                 f"\n")
 
     def __add__(self, other: "Product") -> float:

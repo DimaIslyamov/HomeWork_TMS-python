@@ -21,8 +21,7 @@ class BeeElephant:
     def trumpet(self) -> str:
         if self.elephant_part >= self.bee_part:
             return "tu-tu-doo-doo"
-        else:
-            return "wzzzz"
+        return "wzzzz"
 
     def eat(self, meal: str, value: int) -> None:
         if value < 0:

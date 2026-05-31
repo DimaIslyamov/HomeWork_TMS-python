@@ -6,7 +6,7 @@ product1 = Product("Milk", "Auchan", 3.19)
 product2 = Product("Bread", "Lidl", 2.49)
 product3 = Product("Apple", "Biedronka", 1.99)
 product4 = Product("Banana", "Biedronka", 4.47)
-product5 = Product("Susi", "Lidl", 15.29)
+product5 = Product("Sushi", "Lidl", 15.29)
 
 warehouse = Warehouse(
     products=[product1,

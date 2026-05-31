@@ -2,7 +2,7 @@ from homeWorks_OOP_2.task_01_product_warehouse.product import Product
 
 
 class Warehouse:
-    def __init__(self, products: list[Product] ) -> None:
+    def __init__(self, products: list[Product]) -> None:
         self._products = products
 
     def add_product(self, product: Product) -> None:
