@@ -1,0 +1,37 @@
+lesson_13/
+│
+├── main.py                 # точка запуска программы
+│
+├── generators/             # задания с генераторами
+│   │
+│   ├── __init__.py
+│   ├── fibonacci.py        # задание 1
+│   └── cycle_generator.py  # задание 2
+│
+├── patterns/               # паттерны проектирования
+│   │
+│   ├── __init__.py
+│   │
+│   ├── builder/            # Builder
+│   │   │
+│   │   ├── __init__.py
+│   │   ├── pizza.py
+│   │   ├── builder.py
+│   │   └── director.py
+│   │
+│   ├── factory/            # Factory Method
+│   │   │
+│   │   ├── __init__.py
+│   │   ├── animals.py
+│   │   └── factory.py
+│   │
+│   └── strategy/           # Strategy
+│       │
+│       ├── __init__.py
+│       ├── operations.py
+│       └── calculator.py
+│
+└── utils/
+    │
+    ├── __init__.py
+    └── input_helper.py     # проверки ввода пользователя
