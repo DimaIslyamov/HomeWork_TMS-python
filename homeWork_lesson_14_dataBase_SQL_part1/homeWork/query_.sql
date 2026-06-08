@@ -1,6 +1,6 @@
 -- 3. Обновил должность на более высокую
 UPDATE Employees
-SET Position='Senior Beckend Developer'
+SET Position='Senior Backend Developer'
 WHERE id=1;
 
 -- 4. Добавил новое поле с датой
@@ -23,4 +23,18 @@ CASE id
     WHEN 10 THEN '2024-05-10'::DATE
 END;
 
-SELECT * FROM Employees;
+-- 5. Сотрудники чья должность менеджер
+SELECT Name, Position FROM Employees
+WHERE Position LIKE '%Manager';
+
+-- 6. Сотрудники с зарплатой больше 5000
+SELECT Name, Salary FROM Employees
+WHERE Salary > 5000;
+
+-- 7. Сотрудники с отдела "sales"
+SELECT Name, Departament FROM Employees
+WHERE Departament = 'Sales';
+
+-- 8. Средняя зп по всем сотрудникам
+SELECT ROUND(AVG(Salary)::numeric, 2) AS Avarege_salary
+FROM Employees;
