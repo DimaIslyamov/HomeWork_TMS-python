@@ -1,0 +1,29 @@
+sql_homework_joins/
+│
+├── README.md
+│
+├── task_01_create_tables/
+│   │
+│   ├── 01_create_tables.sql
+│   └── 02_insert_data.sql
+│
+├── task_02_joins/
+│   │
+│   ├── 01_inner_join.sql
+│   ├── 02_left_join.sql
+│   └── 03_right_join.sql
+│
+├── task_03_multiple_joins/
+│   │
+│   ├── 01_inner_join_all_tables.sql
+│   └── 02_left_join_all_tables.sql
+│
+├── task_04_aggregation/
+│   │
+│   ├── 01_inner_join_sum_sales.sql
+│   └── 02_left_join_sum_sales.sql
+│
+└── task_05_subqueries/
+    │
+    ├── 01_best_author.sql
+    └── 02_books_above_average.sql
