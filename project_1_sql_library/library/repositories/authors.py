@@ -88,15 +88,14 @@ class AuthorRepository(IAuthorRepository):
                 entity.id
             )
         )
-
         return cursor.rowcount > 0
 
     def delete(self, entity_id: int) -> bool:
         """Delete an author"""
         cursor = self.db.execute(
             'DELETE FROM authors WHERE id = ?',
-            (entity_id,))
-
+            (entity_id,)
+        )
         return cursor.rowcount > 0
 
     def get_by_name(self, name: str) -> list[Author]:
@@ -105,7 +104,6 @@ class AuthorRepository(IAuthorRepository):
             'SELECT * FROM authors WHERE first_name = ? OR last_name = ?',
             (name, name)
         )
-
         return [self._row_to_author(row) for row in rows]
 
     def search_by_name(self, pattern: str) -> list[Author]:
@@ -115,7 +113,7 @@ class AuthorRepository(IAuthorRepository):
         return [author for author in
                 authors if matches_partial(
                 f"{author.first_name} {author.last_name}",
-                pattern
+                pattern=pattern
             )]
 
     def get_books(self, author_id: int) -> list[Book]:
