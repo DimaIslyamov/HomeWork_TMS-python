@@ -1,0 +1,4 @@
+# Runtime dependencies (add packages as the application grows)
+
+flake8>=7.0.0
+mypy>=0.1.13
