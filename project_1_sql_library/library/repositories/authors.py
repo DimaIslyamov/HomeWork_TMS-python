@@ -11,7 +11,7 @@ from library.repositories.base import (
     matches_partial
 )
 
-from library.repositories.interfaces import IAuthorRepository, T
+from library.repositories.interfaces import IAuthorRepository
 
 
 class AuthorRepository(IAuthorRepository):
@@ -38,7 +38,7 @@ class AuthorRepository(IAuthorRepository):
                 entity.id,
                 entity.first_name,
                 entity.last_name,
-                entity.birth_date
+                format_date(entity.birth_date)
             )
         )
         return require_lastrowid(cursor)
@@ -79,12 +79,12 @@ class AuthorRepository(IAuthorRepository):
             SET first_name = ?,
                 last_name = ?, 
                 birth_date = ?
-            WHERE id = ?,
+            WHERE id = ?
             """,
             (
                 entity.first_name,
                 entity.last_name,
-                entity.birth_date,
+                format_date(entity.birth_date),
                 entity.id
             )
         )
