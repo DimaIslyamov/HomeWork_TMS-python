@@ -29,7 +29,6 @@ class AuthorRepository(IAuthorRepository):
             birth_date=parse_date(row['birth_date']),
         )
 
-
     def add(self, entity: Author) -> int:
         """Add an author to the database"""
         cursor = self.db.execute(
@@ -47,7 +46,7 @@ class AuthorRepository(IAuthorRepository):
         """Get all authors"""
         rows = self.db.fetchall(
             """
-            SELECT * 
+            SELECT *
             FROM authors
             """
         )
@@ -57,7 +56,7 @@ class AuthorRepository(IAuthorRepository):
         """Get an author by its id"""
         row = self.db.fetchone(
             """
-            SELECT * FROM authors 
+            SELECT * FROM authors
             WHERE id = ?
             """,
             (entity_id,)
@@ -75,9 +74,9 @@ class AuthorRepository(IAuthorRepository):
 
         cursor = self.db.execute(
             """
-            UPDATE authors 
+            UPDATE authors
             SET first_name = ?,
-                last_name = ?, 
+                last_name = ?,
                 birth_date = ?
             WHERE id = ?
             """,
@@ -110,21 +109,21 @@ class AuthorRepository(IAuthorRepository):
         """Search authors by a pattern"""
         authors = self.get_all()
 
-        return [author for author in
-                authors if matches_partial(
+        return [
+            author for author in authors
+            if matches_partial(
                 f"{author.first_name} {author.last_name}",
                 pattern=pattern
-            )]
+            )
+        ]
 
     def get_books(self, author_id: int) -> list[Book]:
         """Get books by an author"""
         rows = self.db.fetchall(
             """
-            SELECT books.* FROM books 
-            
-            JOIN books_authors 
+            SELECT books.* FROM books
+            JOIN books_authors
             ON books.id = books_authors.book_id
-            
             WHERE books_authors.author_id = ?
             """,
             (author_id,)
@@ -136,5 +135,5 @@ class AuthorRepository(IAuthorRepository):
             year=row["year"],
             description=row["description"],
         )
-        for row in rows
+            for row in rows
         ]

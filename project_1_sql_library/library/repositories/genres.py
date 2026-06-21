@@ -6,7 +6,7 @@ from library.database.connection import Database
 from library.models.entities import Genre, Book
 from library.repositories.base import require_lastrowid, matches_partial
 
-from library.repositories.interfaces import IGenreRepository, T
+from library.repositories.interfaces import IGenreRepository
 
 
 class GenreRepository(IGenreRepository):
@@ -22,7 +22,6 @@ class GenreRepository(IGenreRepository):
             id=row['id'],
             name=row['name'],
         )
-
 
     def add(self, entity: Genre) -> int:
         """Add Genre to database."""
@@ -70,7 +69,7 @@ class GenreRepository(IGenreRepository):
         )
         return cursor.rowcount > 0
 
-    def  get_by_name(self, name: str) -> list[Genre]:
+    def get_by_name(self, name: str) -> list[Genre]:
         """Get Genres by name."""
         rows = self.db.fetchall(
             'SELECT * FROM genres WHERE name = ?',
@@ -82,19 +81,18 @@ class GenreRepository(IGenreRepository):
         """Search Genres by name."""
         genres = self.get_all()
 
-        return [genre for genre in
-                genres if matches_partial(
-                f"{genre.name}", pattern)]
+        return [
+            genre for genre in genres
+            if matches_partial(genre.name, pattern)
+        ]
 
     def get_books(self, genre_id: int) -> list[Book]:
         """Get Books by genre_id."""
         rows = self.db.fetchall(
             """
-            SELECT books.* FROM books 
-            
-            JOIN books_genres 
+            SELECT books.* FROM books
+            JOIN books_genres
             ON books.id = books_genres.book_id
-            
             WHERE books_genres.genre_id = ?
             """,
             (genre_id,)
