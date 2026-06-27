@@ -201,3 +201,4 @@ class BookRepository(IBookRepository):
             (f"%{genre_name}%",)
         )
         return [self._row_to_book(row) for row in rows]
+

@@ -1,0 +1,52 @@
+class CrudDispatcher(ABC):
+    @property
+    @abstractmethod
+    def title(self) -> str:
+        pass
+
+    @abstractmethod
+    def add(self) -> None:
+        pass
+
+    @abstractmethod
+    def list_all(self) -> None:
+        pass
+
+    @abstractmethod
+    def find(self) -> None:
+        pass
+
+    @abstractmethod
+    def edit(self) -> None:
+        pass
+
+    @abstractmethod
+    def delete(self) -> None:
+        pass
+
+    def run(self) -> None:
+        while True:
+            print(f"\n--- {self.title} ---")
+            print("1. Add")
+            print("2. Show all")
+            print("3. Find")
+            print("4. Edit")
+            print("5. Delete")
+            print("0. Back")
+
+            choice = read_input("Enter choice: ")
+
+            if choice == "1":
+                self.add()
+            elif choice == "2":
+                self.list_all()
+            elif choice == "3":
+                self.find()
+            elif choice == "4":
+                self.edit()
+            elif choice == "5":
+                self.delete()
+            elif choice == "0":
+                return
+            else:
+                print("Unknown command.")
