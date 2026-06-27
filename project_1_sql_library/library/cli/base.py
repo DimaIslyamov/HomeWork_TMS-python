@@ -36,12 +36,12 @@ class CrudDispatcher(ABC):
     def run(self) -> None:
         while True:
             print(f"\n--- {self._title} ---")
-            print("1. Add\n",
-                  "2. Show all\n",
-                  "3. Find\n",
-                  "4. Edit\n",
-                  "5. Delete\n",
-                  "0. Back")
+            print("1. Add")
+            print("2. Show all")
+            print("3. Find")
+            print("4. Edit")
+            print("5. Delete")
+            print("0. Back")
 
             choice = read_input("Enter choice: ")
 

@@ -99,14 +99,118 @@ class BookMenuDispatcher(CrudDispatcher):
         else:
             print("Book not deleted")
 
+    def run(self) -> None:
+        while True:
+            print(f"\n--- {self._title} ---")
+            print("1. Add book")
+            print("2. Show all books")
+            print("3. Find book")
+            print("4. Edit book")
+            print("5. Delete book")
+            print("6. Add author to book")
+            print("7. Add genre to book")
+            print("8. Show book authors")
+            print("9. Show book genres")
+            print("0. Back")
+
+            choice = read_input("Enter choice: ")
+
+            if choice == "1":
+                self._add()
+            elif choice == "2":
+                self._list_all()
+            elif choice == "3":
+                self._find()
+            elif choice == "4":
+                self._edit()
+            elif choice == "5":
+                self._delete()
+            elif choice == "6":
+                self.add_author_to_book()
+            elif choice == "7":
+                self.add_genre_to_book()
+            elif choice == "8":
+                self.show_authors()
+            elif choice == "9":
+                self.show_genres()
+            elif choice == "0":
+                return
+            else:
+                print("Invalid choice.")
+
     def add_author_to_book(self) -> None:
-        pass
+        book_id = read_int("Enter the Book ID: ")
+        if book_id is None:
+            return
+
+        author_id = read_int("Enter the Author ID: ")
+        if author_id is None:
+            return
+
+        self._repo.add_author(
+            book_id=book_id,
+            author_id=author_id
+        )
+        print("Author added to book")
 
     def add_genre_to_book(self) -> None:
-        pass
+        book_id = read_int("Enter the Book ID: ")
+        if book_id is None:
+            return
+
+        genre_id = read_int("Enter the Genre ID: ")
+        if genre_id is None:
+            return
+
+        self._repo.add_genre(
+            book_id=book_id,
+            genre_id=genre_id
+        )
+        print("Genre added to book")
 
     def show_authors(self) -> None:
-        pass
+        book_id = read_int("Enter the Book ID: ")
+        if book_id is None:
+            return
+
+        book = self._repo.get_by_id(book_id)
+        if book is None:
+            print("Book not found.")
+            return
+
+        authors = self._repo.get_authors(book_id)
+
+        if not authors:
+            print("No authors found for this book.")
+            return
+
+        print(f"Authors of {book.title}:")
+
+        for author in authors:
+            print(
+                f"{author.id}. "
+                f"{author.first_name.title()} "
+                f"{author.last_name.title()} "
+                f"{author.birth_date}"
+            )
 
     def show_genres(self) -> None:
-        pass
+        book_id = read_int("Enter the Book ID: ")
+        if book_id is None:
+            return
+
+        book = self._repo.get_by_id(book_id)
+        if book is None:
+            print("Book not found.")
+            return
+
+        genres = self._repo.get_genres(book_id)
+
+        if not genres:
+            print("No genres found for this book.")
+            return
+
+        print(f"Genres of {book.title}:")
+
+        for genre in genres:
+            print(f"{genre.id}. {genre.name.title()}")

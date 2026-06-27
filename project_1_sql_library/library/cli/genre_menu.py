@@ -55,10 +55,15 @@ class GenreMenuDispatcher(CrudDispatcher):
             "Enter the Genre new name: ",
             required=False) or item.name
 
-        updated_genre = self._repo.update(Genre(
+        updated_genre = Genre(
             id=genre_id,
             name=name
-        ))
+        )
+
+        if self._repo.update(entity=updated_genre):
+            print("Genre updated")
+        else:
+            print("Genre not found")
 
     def _delete(self) -> None:
         genre_id = read_int("Enter the Genre ID: ")
