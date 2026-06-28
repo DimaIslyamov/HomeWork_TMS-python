@@ -25,7 +25,7 @@ def read_int(prompt: str, required: bool = True) -> Optional[int]:
             print("Enter an integer.")
 
 
-def read_required_int(prompt: str) -> int | None:
+def read_required_int(prompt: str) -> int:
     """Convert string to int."""
     value = read_int(prompt=prompt, required=True)
     if value is None:

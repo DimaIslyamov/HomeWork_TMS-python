@@ -72,11 +72,11 @@ class IBookRepository(IRepository[Book],
     """Interface repository for books"""
 
     @abstractmethod
-    def add_author(self, book_id: int, author_id: int) -> None:
+    def add_author(self, book_id: int, author_id: int) -> bool:
         """Add author to book"""
 
     @abstractmethod
-    def add_genre(self, book_id: int, genre_id: int) -> None:
+    def add_genre(self, book_id: int, genre_id: int) -> bool:
         """Add genre to book"""
 
     @abstractmethod

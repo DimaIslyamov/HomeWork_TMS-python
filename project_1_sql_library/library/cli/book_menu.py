@@ -115,6 +115,8 @@ class BookMenuDispatcher(CrudDispatcher):
             print("7. Add genre to book")
             print("8. Show book authors")
             print("9. Show book genres")
+            print("10. Search by author")
+            print("11. Search by genre")
             print("0. Back")
 
             choice = read_input("Enter choice: ")
@@ -137,6 +139,10 @@ class BookMenuDispatcher(CrudDispatcher):
                 self.show_authors()
             elif choice == "9":
                 self.show_genres()
+            elif choice == "10":
+                self._search_by_author()
+            elif choice == "11":
+                self._search_by_genre()
             elif choice == "0":
                 return
             else:
@@ -222,3 +228,25 @@ class BookMenuDispatcher(CrudDispatcher):
 
         for genre in genres:
             print(f"{genre.id}. {genre.name.title()}")
+
+    def _search_by_author(self) -> None:
+        author_name = read_input("Enter the Author: ")
+        books = self._repo.search_by_author(author_name)
+
+        if not books:
+            print("No books found for this author.")
+            return
+
+        for book in books:
+            print(f"{book.id}. {book.title} - {book.year}: {book.description}")
+
+    def _search_by_genre(self) -> None:
+        genre_name = read_input("Enter the Genre: ")
+        books = self._repo.search_by_genre(genre_name)
+
+        if not books:
+            print("No books found for this genre.")
+            return
+
+        for book in books:
+            print(f"{book.id}. {book.title} - {book.year}: {book.description}")
