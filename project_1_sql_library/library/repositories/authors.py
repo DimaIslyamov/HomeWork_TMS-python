@@ -32,7 +32,10 @@ class AuthorRepository(IAuthorRepository):
     def add(self, entity: Author) -> int:
         """Add an author to the database"""
         cursor = self.db.execute(
-            'INSERT INTO authors VALUES (?, ?, ?, ?)',
+            """
+            INSERT INTO authors (id, first_name, last_name, birth_date)
+            VALUES (?, ?, ?, ?)
+            """,
             (
                 entity.id,
                 entity.first_name,

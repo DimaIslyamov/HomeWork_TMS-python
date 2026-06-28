@@ -26,7 +26,10 @@ class GenreRepository(IGenreRepository):
     def add(self, entity: Genre) -> int:
         """Add Genre to database."""
         cursor = self.db.execute(
-            'INSERT INTO genres VALUES (?, ?)',
+            """
+            INSERT INTO genres (id, name) 
+            VALUES (?, ?)
+            """,
             (entity.id, entity.name)
         )
         return require_lastrowid(cursor)

@@ -50,7 +50,10 @@ class BookRepository(IBookRepository):
     def add(self, entity: Book) -> int:
         """Add a book to the database"""
         cursor = self.db.execute(
-            "INSERT INTO books VALUES (?, ?, ?, ?)",
+            """
+            INSERT INTO books (id, title, year, description) 
+            VALUES (?, ?, ?, ?)
+            """,
             (
                 entity.id,
                 entity.title,
@@ -116,25 +119,27 @@ class BookRepository(IBookRepository):
             if matches_partial(book.title, pattern=pattern)
         ]
 
-    def add_author(self, book_id: int, author_id: int) -> None:
+    def add_author(self, book_id: int, author_id: int) -> bool:
         """Add an author to a book."""
-        self.db.execute(
+        cursor = self.db.execute(
             """
             INSERT OR IGNORE INTO books_authors (book_id, author_id)
             VALUES (?, ?)
             """,
             (book_id, author_id)
         )
+        return cursor.rowcount > 0
 
-    def add_genre(self, book_id: int, genre_id: int) -> None:
+    def add_genre(self, book_id: int, genre_id: int) -> bool:
         """Add a genre to a book."""
-        self.db.execute(
+        cursor = self.db.execute(
             """
             INSERT OR IGNORE INTO books_genres (book_id, genre_id)
             VALUES (?, ?)
             """,
             (book_id, genre_id)
         )
+        return cursor.rowcount > 0
 
     def get_authors(self, book_id: int) -> list[Author]:
         """Get all authors of a book."""

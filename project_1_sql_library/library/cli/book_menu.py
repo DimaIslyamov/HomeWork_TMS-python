@@ -1,5 +1,9 @@
 from library.cli.base import CrudDispatcher
-from library.cli.helpers import read_input, read_int
+from library.cli.helpers import (
+    read_input,
+    read_int,
+    read_required_int
+)
 from library.repositories.books import BookRepository
 from library.models.entities import Book
 
@@ -16,7 +20,7 @@ class BookMenuDispatcher(CrudDispatcher):
 
     def _add(self) -> None:
         title = read_input("Enter the title: ")
-        year = read_int("Enter the year YYYY: ")
+        year = read_required_int("Enter the year YYYY: ")
         description = read_input("Enter the description: ")
 
         book_id = self._repo.add(entity=Book(
@@ -147,11 +151,13 @@ class BookMenuDispatcher(CrudDispatcher):
         if author_id is None:
             return
 
-        self._repo.add_author(
+        if self._repo.add_author(
             book_id=book_id,
             author_id=author_id
-        )
-        print("Author added to book")
+        ):
+            print("Author added to book")
+        else:
+            print("Author not added to book")
 
     def add_genre_to_book(self) -> None:
         book_id = read_int("Enter the Book ID: ")
@@ -162,11 +168,13 @@ class BookMenuDispatcher(CrudDispatcher):
         if genre_id is None:
             return
 
-        self._repo.add_genre(
+        if self._repo.add_genre(
             book_id=book_id,
             genre_id=genre_id
-        )
-        print("Genre added to book")
+        ):
+            print("Genre added to book")
+        else:
+            print("Genre not added to book")
 
     def show_authors(self) -> None:
         book_id = read_int("Enter the Book ID: ")

@@ -37,6 +37,7 @@ class MainMenu:
         print("1. Authors")
         print("2. Genres")
         print("3. Books")
+        print("0. Exit")
 
     def _dispatch(self, choice: str) -> None:
         handlers = {

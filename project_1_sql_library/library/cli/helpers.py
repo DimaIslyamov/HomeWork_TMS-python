@@ -25,6 +25,14 @@ def read_int(prompt: str, required: bool = True) -> Optional[int]:
             print("Enter an integer.")
 
 
+def read_required_int(prompt: str) -> int | None:
+    """Convert string to int."""
+    value = read_int(prompt=prompt, required=True)
+    if value is None:
+        raise RuntimeError("Required int cannot be None.")
+    return value
+
+
 def read_float(prompt: str) -> float:
     """Read a floating-point number from the user."""
     while True:
