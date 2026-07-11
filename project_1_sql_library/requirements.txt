@@ -1,4 +1,7 @@
+alembic==1.18.5
 flake8==7.3.0
+Mako==1.3.12
+MarkupSafe==3.0.3
 mccabe==0.7.0
 mupy==0.1.13
 pycodestyle==2.14.0
