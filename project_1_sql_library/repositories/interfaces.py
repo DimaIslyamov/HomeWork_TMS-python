@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Generic, TypeVar
 
-from models.entities import Author, Book, Genre
+from models import AuthorModel, BookModel, GenreModel
 
 T = TypeVar("T")
 
@@ -38,36 +38,36 @@ class ISearchRepository(ABC, Generic[T]):
         """Search entity by name"""
 
 
-class IAuthorRepository(IRepository[Author],
-                        ISearchRepository[Author],
+class IAuthorRepository(IRepository[AuthorModel],
+                        ISearchRepository[AuthorModel],
                         ABC):
     """Interface repository for authors"""
 
     @abstractmethod
-    def get_by_name(self, name: str) -> list[Author]:
+    def get_by_name(self, name: str) -> list[AuthorModel]:
         """Get author by name"""
 
     @abstractmethod
-    def get_books(self, author_id: int) -> list[Book]:
+    def get_books(self, author_id: int) -> list[BookModel]:
         """Get author books by author_id"""
 
 
-class IGenreRepository(IRepository[Genre],
-                       ISearchRepository[Genre],
+class IGenreRepository(IRepository[GenreModel],
+                       ISearchRepository[GenreModel],
                        ABC):
     """Interface repository for genres"""
 
     @abstractmethod
-    def get_by_name(self, name: str) -> list[Genre]:
+    def get_by_name(self, name: str) -> list[GenreModel]:
         """Get genre by name"""
 
     @abstractmethod
-    def get_books(self, genre_id: int) -> list[Book]:
+    def get_books(self, genre_id: int) -> list[BookModel]:
         """Get genre books by genre_id"""
 
 
-class IBookRepository(IRepository[Book],
-                      ISearchRepository[Book],
+class IBookRepository(IRepository[BookModel],
+                      ISearchRepository[BookModel],
                       ABC):
     """Interface repository for books"""
 
@@ -80,17 +80,17 @@ class IBookRepository(IRepository[Book],
         """Add genre to book"""
 
     @abstractmethod
-    def get_authors(self, book_id: int) -> list[Author]:
+    def get_authors(self, book_id: int) -> list[AuthorModel]:
         """Get authors of book by book_id."""
 
     @abstractmethod
-    def get_genres(self, book_id: int) -> list[Genre]:
+    def get_genres(self, book_id: int) -> list[GenreModel]:
         """Get genre of books by book_id"""
 
     @abstractmethod
-    def search_by_author(self, author_name: str) -> list[Book]:
+    def search_by_author(self, author_name: str) -> list[BookModel]:
         """Search books by author name."""
 
     @abstractmethod
-    def search_by_genre(self, genre_name: str) -> list[Book]:
+    def search_by_genre(self, genre_name: str) -> list[BookModel]:
         """Search genre by genre name."""

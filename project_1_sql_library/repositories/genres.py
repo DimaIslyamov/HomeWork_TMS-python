@@ -1,111 +1,81 @@
 """Genres repository module."""
 
-from sqlite3 import Row
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 
-from database.connection import Database
-from models.entities import Genre, Book
-from repositories.base import require_lastrowid, matches_partial
-
+from models.book_model import BookModel
+from models.genre_model import GenreModel
 from repositories.interfaces import IGenreRepository
 
 
 class GenreRepository(IGenreRepository):
     """CRUD methods for Genre repository."""
 
-    def __init__(self, db: Database):
-        self.db = db
+    def __init__(self, session: Session) -> None:
+        self._session = session
 
-    @staticmethod
-    def _row_to_genre(row: Row) -> Genre:
-        """Convert row to Genre"""
-        return Genre(
-            id=row['id'],
-            name=row['name'],
-        )
-
-    def add(self, entity: Genre) -> int:
+    def add(self, entity: GenreModel) -> int:
         """Add Genre to database."""
-        cursor = self.db.execute(
-            """
-            INSERT INTO genres (id, name) 
-            VALUES (?, ?)
-            """,
-            (entity.id, entity.name)
-        )
-        return require_lastrowid(cursor)
+        self._session.add(entity)
+        self._session.commit()
 
-    def get_by_id(self, entity_id: int) -> Genre | None:
+        return entity.id
+
+    def get_by_id(self, entity_id: int) -> GenreModel | None:
         """Get Genre by id."""
-        row = self.db.fetchone(
-            'SELECT * FROM genres WHERE id = ?',
-            (entity_id,)
-        )
+        return self._session.get(GenreModel, entity_id)
 
-        if row is None:
-            return None
-
-        return self._row_to_genre(row)
-
-    def get_all(self) -> list[Genre]:
+    def get_all(self) -> list[GenreModel]:
         """Get all Genres."""
-        rows = self.db.fetchall(
-            'SELECT * FROM genres'
-        )
-        return [self._row_to_genre(row) for row in rows]
+        statement = (select(GenreModel).order_by(GenreModel.name))
 
-    def update(self, entity: Genre) -> bool:
+        return list(self._session.scalars(statement).all())
+
+    def update(self, entity: GenreModel) -> bool:
         """Update Genre in database."""
         if entity.id is None:
             return False
 
-        cursor = self.db.execute(
-            'UPDATE genres SET name = ? WHERE id = ?',
-            (entity.name, entity.id)
-        )
-        return cursor.rowcount > 0
+        genre_model = self._session.get(GenreModel, entity.id)
+
+        if genre_model is None:
+            return False
+
+        genre_model.name = entity.name
+        self._session.commit()
+
+        return True
 
     def delete(self, entity_id: int) -> bool:
         """Delete Genre in database."""
-        cursor = self.db.execute(
-            'DELETE FROM genres WHERE id = ?',
-            (entity_id,)
-        )
-        return cursor.rowcount > 0
+        genre_model = self._session.get(GenreModel, entity_id)
+        if genre_model is not None:
+            self._session.delete(genre_model)
+            self._session.commit()
+            return True
+        return False
 
-    def get_by_name(self, name: str) -> list[Genre]:
+    def get_by_name(self, name: str) -> list[GenreModel]:
         """Get Genres by name."""
-        rows = self.db.fetchall(
-            'SELECT * FROM genres WHERE name = ?',
-            (name,)
-        )
-        return [self._row_to_genre(row) for row in rows]
+        statement = (select(GenreModel)
+                     .where(GenreModel.name == name)
+                     .order_by(GenreModel.id))
 
-    def search_by_name(self, pattern: str) -> list[Genre]:
+        return list(self._session.scalars(statement).all())
+
+    def search_by_name(self, pattern: str) -> list[GenreModel]:
         """Search Genres by name."""
-        genres = self.get_all()
+        statement = ((select(GenreModel)
+                     .where(GenreModel.name.ilike(f"%{pattern}%")))
+                     .order_by(GenreModel.id))
 
-        return [
-            genre for genre in genres
-            if matches_partial(genre.name, pattern)
-        ]
+        return list(self._session.scalars(statement).all())
 
-    def get_books(self, genre_id: int) -> list[Book]:
+    def get_books(self, genre_id: int) -> list[BookModel]:
         """Get Books by genre_id."""
-        rows = self.db.fetchall(
-            """
-            SELECT books.* FROM books
-            JOIN books_genres
-            ON books.id = books_genres.book_id
-            WHERE books_genres.genre_id = ?
-            """,
-            (genre_id,)
-        )
+        statement = (select(BookModel)
+                     .join(BookModel.genres)
+                     .where(GenreModel.id == genre_id)
+                     .order_by(BookModel.id))
 
-        return [Book(
-            id=row["id"],
-            title=row["title"],
-            year=row["year"],
-            description=row["description"],
-        )
-            for row in rows
-        ]
+        return list(self._session.scalars(statement).all())

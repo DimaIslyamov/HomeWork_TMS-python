@@ -1,208 +1,151 @@
 """Books repository module."""
 
-from sqlite3 import Row
+from sqlalchemy import select, or_, and_
+from sqlalchemy.orm import Session
 
-from database.connection import Database
-from models.entities import Book, Author, Genre
-from repositories.base import (
-    require_lastrowid,
-    matches_partial,
-    parse_date,
-)
-
+from models.author_model import AuthorModel
+from models.genre_model import GenreModel
+from models.book_model import BookModel
 from repositories.interfaces import IBookRepository
 
 
 class BookRepository(IBookRepository):
     """CRUD methods for Book repository."""
 
-    def __init__(self, db: Database) -> None:
-        self.db = db
+    def __init__(self, session: Session) -> None:
+        self._session = session
 
-    @staticmethod
-    def _row_to_book(row: Row) -> Book:
-        """Convert row to Book."""
-        return Book(
-            id=row['id'],
-            title=row['title'],
-            year=row['year'],
-            description=row['description'],
-        )
-
-    @staticmethod
-    def _row_to_author(row: Row) -> Author:
-        """Convert row to Author."""
-        return Author(
-            id=row['id'],
-            first_name=row['first_name'],
-            last_name=row['last_name'],
-            birth_date=parse_date(row['birth_date']),
-        )
-
-    @staticmethod
-    def _row_to_genre(row: Row) -> Genre:
-        """Convert row to Genre."""
-        return Genre(
-            id=row['id'],
-            name=row['name'],
-        )
-
-    def add(self, entity: Book) -> int:
+    def add(self, entity: BookModel) -> int:
         """Add a book to the database"""
-        cursor = self.db.execute(
-            """
-            INSERT INTO books (id, title, year, description) 
-            VALUES (?, ?, ?, ?)
-            """,
-            (
-                entity.id,
-                entity.title,
-                entity.year,
-                entity.description
-            )
-        )
-        return require_lastrowid(cursor)
+        self._session.add(entity)
+        self._session.commit()
 
-    def get_by_id(self, entity_id: int) -> Book | None:
+        return entity.id
+
+    def get_by_id(self, entity_id: int) -> BookModel | None:
         """Get a book by its id"""
-        row = self.db.fetchone(
-            "SELECT * FROM books WHERE id = ?",
-            (entity_id,)
-        )
+        return self._session.get(BookModel, entity_id)
 
-        if row is None:
-            return None
-
-        return self._row_to_book(row)
-
-    def get_all(self) -> list[Book]:
+    def get_all(self) -> list[BookModel]:
         """Get all books"""
-        rows = self.db.fetchall(
-            "SELECT * FROM books"
-        )
-        return [self._row_to_book(row) for row in rows]
+        statement = select(BookModel).order_by(BookModel.id)
 
-    def update(self, entity: Book) -> bool:
-        """Update a book"""
+        return list(self._session.scalars(statement).all())
+
+    def update(self, entity: BookModel) -> bool:
+        """Update a book model"""
         if entity.id is None:
             return False
 
-        cursor = self.db.execute(
-            """
-            UPDATE books
-            SET title = ?, year = ?, description = ?
-            WHERE id = ?
-            """,
-            (
-                entity.title,
-                entity.year,
-                entity.description,
-                entity.id
-            )
-        )
-        return cursor.rowcount > 0
+        update_book_model = self._session.get(BookModel, entity.id)
+
+        if update_book_model is None:
+            return False
+
+        update_book_model.title = entity.title
+        update_book_model.year = entity.year
+        update_book_model.description = entity.description
+
+        self._session.add(update_book_model)
+        self._session.commit()
+
+        return True
 
     def delete(self, entity_id: int) -> bool:
         """Delete a book"""
-        cursor = self.db.execute(
-            "DELETE FROM books WHERE id = ?",
-            (entity_id,)
-        )
-        return cursor.rowcount > 0
+        delete_book_model = self._session.get(BookModel, entity_id)
 
-    def search_by_name(self, pattern: str) -> list[Book]:
+        if delete_book_model is not None:
+            self._session.delete(delete_book_model)
+            self._session.commit()
+
+            return True
+
+        return False
+
+    def search_by_name(self, pattern: str) -> list[BookModel]:
         """Search books by name"""
-        books = self.get_all()
+        statement = (
+            select(BookModel)
+            .where(BookModel.title.ilike(f"%{pattern}%"))
+            .order_by(BookModel.id))
 
-        return [
-            book for book in books
-            if matches_partial(book.title, pattern=pattern)
-        ]
+        return list(self._session.scalars(statement).all())
 
     def add_author(self, book_id: int, author_id: int) -> bool:
         """Add an author to a book."""
-        cursor = self.db.execute(
-            """
-            INSERT OR IGNORE INTO books_authors (book_id, author_id)
-            VALUES (?, ?)
-            """,
-            (book_id, author_id)
-        )
-        return cursor.rowcount > 0
+        book = self._session.get(BookModel, book_id)
+        author = self._session.get(AuthorModel, author_id)
+
+        if book is None or author is None:
+            return False
+
+        if author in book.authors:
+            return False
+
+        book.authors.append(author)
+        self._session.commit()
+
+        return True
+
 
     def add_genre(self, book_id: int, genre_id: int) -> bool:
         """Add a genre to a book."""
-        cursor = self.db.execute(
-            """
-            INSERT OR IGNORE INTO books_genres (book_id, genre_id)
-            VALUES (?, ?)
-            """,
-            (book_id, genre_id)
-        )
-        return cursor.rowcount > 0
+        book = self._session.get(BookModel, book_id)
+        genre = self._session.get(GenreModel, genre_id)
 
-    def get_authors(self, book_id: int) -> list[Author]:
+        if book is None or genre is None:
+            return False
+
+        if genre in book.genres:
+            return False
+
+        book.genres.add(genre)
+        self._session.commit()
+
+        return True
+
+    def get_authors(self, book_id: int) -> list[AuthorModel]:
         """Get all authors of a book."""
-        rows = self.db.fetchall(
-            """
-            SELECT authors.*
-            FROM authors
-            JOIN books_authors
-                ON authors.id = books_authors.author_id
-            WHERE books_authors.book_id = ?
-            """,
-            (book_id,)
+        statement = (
+            select(AuthorModel)
+            .join(AuthorModel)
+            .where(BookModel.id == book_id)
+            .order_by(AuthorModel.id)
         )
-        return [self._row_to_author(row) for row in rows]
+        return list(self._session.scalars(statement).unique().all())
 
-    def get_genres(self, book_id: int) -> list[Genre]:
+    def get_genres(self, book_id: int) -> list[GenreModel]:
         """Get all genres of a book."""
-        rows = self.db.fetchall(
-            """
-            SELECT genres.*
-            FROM genres
-            JOIN books_genres
-                ON genres.id = books_genres.genre_id
-            WHERE books_genres.book_id = ?
-            """,
-            (book_id,)
+        statement = (
+            select(GenreModel)
+            .join(GenreModel)
+            .where(BookModel.id == book_id)
+            .order_by(GenreModel.id)
         )
-        return [self._row_to_genre(row) for row in rows]
+        return list(self._session.scalars(statement).unique().all())
 
-    def search_by_author(self, author_name: str) -> list[Book]:
+    def search_by_author(self, author_name: str) -> list[BookModel]:
         """Search books by author name."""
-        rows = self.db.fetchall(
-            """
-            SELECT DISTINCT books.*
-            FROM books
-            JOIN books_authors
-                ON books.id = books_authors.book_id
-            JOIN authors
-                ON authors.id = books_authors.author_id
-            WHERE authors.first_name LIKE ?
-               OR authors.last_name LIKE ?
-               OR authors.first_name || ' ' || authors.last_name LIKE ?
-            """,
-            (
-                f"%{author_name}%",
-                f"%{author_name}%",
-                f"%{author_name}%",
+        statement = (
+            select(BookModel)
+            .join(BookModel.authors)
+            .where(
+                or_(
+                    AuthorModel.first_name.ilike(f"%{author_name}%"),
+                    AuthorModel.last_name.ilike(f"%{author_name}%"),
+                )
             )
+            .order_by(BookModel.id)
         )
-        return [self._row_to_book(row) for row in rows]
+        return list(self._session.scalars(statement).unique().all())
 
-    def search_by_genre(self, genre_name: str) -> list[Book]:
+    def search_by_genre(self, genre_name: str) -> list[BookModel]:
         """Search books by genre name."""
-        rows = self.db.fetchall(
-            """
-            SELECT DISTINCT books.*
-            FROM books
-            JOIN books_genres
-                ON books.id = books_genres.book_id
-            JOIN genres
-                ON genres.id = books_genres.genre_id
-            WHERE genres.name LIKE ?
-            """,
-            (f"%{genre_name}%",)
+        statement = (
+            select(BookModel)
+            .join(BookModel.genres)
+            .where(GenreModel.name.ilike(f"%{genre_name}%"))
+            .order_by(BookModel.id)
         )
-        return [self._row_to_book(row) for row in rows]
+        return list(self._session.scalars(statement).unique().all())
