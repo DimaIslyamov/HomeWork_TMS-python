@@ -1,16 +1,13 @@
 """Entry point into the library application."""
 
-from database.connection import Database
+from database.session import SessionFactory
 from cli.menu import MainMenu
-from database.schema import init_schema
 
 
 def main() -> None:
     """Run library application."""
-    with Database() as db:
-        init_schema(db)
-
-        menu = MainMenu(db)
+    with SessionFactory() as session:
+        menu = MainMenu(session)
         menu.run_menu()
 
 

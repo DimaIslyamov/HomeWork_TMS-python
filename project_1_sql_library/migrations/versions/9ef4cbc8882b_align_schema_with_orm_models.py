@@ -30,10 +30,6 @@ def upgrade() -> None:
                existing_type=sa.TEXT(),
                type_=sa.String(length=100),
                existing_nullable=False)
-        batch_op.alter_column('birth_date',
-               existing_type=sa.TEXT(),
-               type_=sa.Date(),
-               existing_nullable=True)
 
     with op.batch_alter_table('books', schema=None) as batch_op:
         batch_op.alter_column('title',
@@ -66,10 +62,6 @@ def downgrade() -> None:
                existing_nullable=False)
 
     with op.batch_alter_table('authors', schema=None) as batch_op:
-        batch_op.alter_column('birth_date',
-               existing_type=sa.Date(),
-               type_=sa.TEXT(),
-               existing_nullable=True)
         batch_op.alter_column('last_name',
                existing_type=sa.String(length=100),
                type_=sa.TEXT(),

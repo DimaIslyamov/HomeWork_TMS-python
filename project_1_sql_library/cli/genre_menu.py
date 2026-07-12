@@ -1,7 +1,7 @@
 from cli.base import CrudDispatcher
 from cli.helpers import read_input, read_int
 from repositories.genres import GenreRepository
-from models.entities import Genre
+from models.genre_model import GenreModel
 
 
 class GenreMenuDispatcher(CrudDispatcher):
@@ -15,11 +15,11 @@ class GenreMenuDispatcher(CrudDispatcher):
 
     def _add(self) -> None:
         name = read_input("Enter the Genre: ")
-
-        genre_id = self._repo.add(Genre(
-            id=None,
-            name=name
-        ))
+        genre_id = self._repo.add(
+            GenreModel(
+                name=name
+            )
+        )
         print(f"Genre for {genre_id} was added")
 
     def _list_all(self) -> None:
@@ -43,10 +43,12 @@ class GenreMenuDispatcher(CrudDispatcher):
 
     def _edit(self) -> None:
         genre_id = read_int("Enter the Genre ID: ")
+
         if genre_id is None:
             return
 
         item = self._repo.get_by_id(genre_id)
+
         if item is None:
             print(f"Genre with id={genre_id} not found")
             return
@@ -55,12 +57,9 @@ class GenreMenuDispatcher(CrudDispatcher):
             "Enter the Genre new name: ",
             required=False) or item.name
 
-        updated_genre = Genre(
-            id=genre_id,
-            name=name
-        )
+        item.name = name
 
-        if self._repo.update(entity=updated_genre):
+        if self._repo.update(item):
             print("Genre updated")
         else:
             print("Genre not found")
@@ -101,4 +100,4 @@ class GenreMenuDispatcher(CrudDispatcher):
                 f"{book.title.title()} "
                 f"{book.year} - "
                 f"{book.description}"
-                )
+            )

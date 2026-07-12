@@ -13,11 +13,13 @@ class Author:
     last_name: str
     birth_date: Optional[date]
 
+
 @dataclass
 class Genre:
     """Data model for genre."""
     id: Optional[int]
     name: str
+
 
 @dataclass
 class Book:

@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class BookModel(Base):
     __tablename__ = "books"
 
-    id: Mapped[int] =  mapped_column(primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     title: Mapped[str] = mapped_column(String(300), nullable=False)
     year: Mapped[int] = mapped_column(Integer, nullable=False)
 

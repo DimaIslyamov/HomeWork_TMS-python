@@ -5,14 +5,13 @@ from cli.helpers import (
     read_required_int
 )
 from repositories.books import BookRepository
-from models.entities import Book
+from models.book_model import BookModel
 
 
 class BookMenuDispatcher(CrudDispatcher):
 
     def __init__(self, repo: BookRepository):
         self._repo = repo
-
 
     @property
     def _title(self) -> str:
@@ -23,12 +22,13 @@ class BookMenuDispatcher(CrudDispatcher):
         year = read_required_int("Enter the year YYYY: ")
         description = read_input("Enter the description: ")
 
-        book_id = self._repo.add(entity=Book(
-            id=None,
-            title=title,
-            year=year,
-            description=description
-        ))
+        book_id = self._repo.add(
+            BookModel(
+                title=title,
+                year=year,
+                description=description
+            )
+        )
         print(f"Book with id: {book_id} added")
 
     def _list_all(self) -> None:
@@ -80,7 +80,7 @@ class BookMenuDispatcher(CrudDispatcher):
             "Enter the Book description: ",
             required=False) or item.description
 
-        update_book = Book(
+        update_book = BookModel(
             id=book_id,
             title=title,
             year=year,

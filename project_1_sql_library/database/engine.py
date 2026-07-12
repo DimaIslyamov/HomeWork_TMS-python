@@ -1,14 +1,14 @@
 """SQLAlchemy engine configuration."""
 
+from pathlib import Path
 from sqlite3 import Connection as SQLiteConnection, Cursor
 from typing import Any
 
 from sqlalchemy import create_engine, event
 from sqlalchemy.engine import Engine
 
-from database.connection import DEFAULT_DATABASE_PATH
 
-
+DEFAULT_DATABASE_PATH = Path(__file__).resolve().parent.parent / "data" / "library.db"
 DATABASE_URL = f"sqlite:///{DEFAULT_DATABASE_PATH.as_posix()}"
 
 engine = create_engine(DATABASE_URL, echo=False)

@@ -53,11 +53,9 @@ class Database:
 
         return self.connect().execute(query, params).fetchall()
 
-
     def __enter__(self) -> "Database":
         self.connect()
         return self
-
 
     def __exit__(self,
                  exc_type: Any,

@@ -5,12 +5,20 @@ from typing import Optional
 
 
 def read_input(prompt: str, required: bool = True) -> str:
-    """Read input from user."""
     while True:
         value = input(prompt).strip()
-        if value or not required:
-            return value
-        print("This field is required.")
+
+        try:
+            value.encode("utf-8")
+        except UnicodeEncodeError:
+            print("Input contains an invalid character. Enter the value again.")
+            continue
+
+        if required and not value:
+            print("Value is required.")
+            continue
+
+        return value
 
 
 def read_int(prompt: str, required: bool = True) -> Optional[int]:

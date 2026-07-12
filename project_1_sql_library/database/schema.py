@@ -7,7 +7,6 @@ CREATE TABLE IF NOT EXISTS authors (
     first_name  TEXT NOT NULL,
     last_name   TEXT NOT NULL,
     birth_date  TEXT,
-    
     UNIQUE (first_name, last_name, birth_date)
 );
 
@@ -26,20 +25,16 @@ CREATE TABLE IF NOT EXISTS genres (
 CREATE TABLE IF NOT EXISTS books_authors (
     book_id     INTEGER NOT NULL,
     author_id   INTEGER NOT NULL,
-    
     FOREIGN KEY (book_id) REFERENCES books (id) ON DELETE CASCADE,
     FOREIGN KEY (author_id) REFERENCES authors (id) ON DELETE CASCADE,
-    
     PRIMARY KEY (book_id, author_id)
 );
 
 CREATE TABLE IF NOT EXISTS books_genres (
     book_id     INTEGER NOT NULL,
     genre_id   INTEGER NOT NULL,
-    
     FOREIGN KEY (book_id) REFERENCES books (id) ON DELETE CASCADE,
     FOREIGN KEY (genre_id) REFERENCES genres (id) ON DELETE CASCADE,
-    
     PRIMARY KEY (book_id, genre_id)
 );
 """

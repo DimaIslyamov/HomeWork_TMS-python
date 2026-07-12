@@ -1,7 +1,7 @@
 """Books repository module."""
 
 from sqlalchemy import select, or_
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 from sqlalchemy.exc import IntegrityError
 
 from models.author_model import AuthorModel
@@ -28,9 +28,13 @@ class BookRepository(IBookRepository):
 
         return entity.id
 
+    #  спросить gpt про этот n+1 - преподаватель сказал написать так
     def get_by_id(self, entity_id: int) -> BookModel | None:
         """Get a book by its id"""
-        return self._session.get(BookModel, entity_id)
+        stmt = select(BookModel).where(BookModel.id == entity_id).options(
+            selectinload(BookModel.authors))
+
+        return self._session.scalar(stmt)
 
     def get_all(self) -> list[BookModel]:
         """Get all books"""
@@ -109,7 +113,6 @@ class BookRepository(IBookRepository):
 
         return True
 
-
     def add_genre(self, book_id: int, genre_id: int) -> bool:
         """Add a genre to a book."""
         book = self._session.get(BookModel, book_id)
@@ -127,8 +130,7 @@ class BookRepository(IBookRepository):
             self._session.commit()
         except IntegrityError:
             self._session.rollback()
-            raise 
-
+            raise
         return True
 
     def get_authors(self, book_id: int) -> list[AuthorModel]:

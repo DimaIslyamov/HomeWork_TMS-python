@@ -1,7 +1,7 @@
 from cli.base import CrudDispatcher
 from cli.helpers import read_input, read_date, read_int
 from repositories.authors import AuthorRepository
-from models.entities import Author
+from models.author_model import AuthorModel
 
 
 class AuthorMenuDispatcher(CrudDispatcher):
@@ -16,14 +16,16 @@ class AuthorMenuDispatcher(CrudDispatcher):
     def _add(self) -> None:
         first_name = read_input("Enter first name: ")
         last_name = read_input("Enter last name: ")
-        date_of_birth = read_date("Enter date of birth YYYY-MM-DD: ")
+        birth_date = read_date("Enter date of birth", required=False)
 
-        author_id = self._repo.add(entity=Author(
-            id=None,
-            first_name=first_name,
-            last_name=last_name,
-            birth_date=date_of_birth
-        ))
+        author_id = self._repo.add(
+            AuthorModel(
+                first_name=first_name,
+                last_name=last_name,
+                birth_date=birth_date,
+            )
+        )
+
         print(f"Author with id={author_id} added")
 
     def _list_all(self) -> None:
@@ -54,7 +56,6 @@ class AuthorMenuDispatcher(CrudDispatcher):
                   f"{author.birth_date}"
                   )
 
-
     def _edit(self) -> None:
         author_id = read_int("Enter author ID: ")
 
@@ -80,14 +81,14 @@ class AuthorMenuDispatcher(CrudDispatcher):
         if date_of_birth is None:
             date_of_birth = item.birth_date
 
-        updated = Author(
+        updated_author = AuthorModel(
             id=author_id,
             first_name=first_name,
             last_name=last_name,
             birth_date=date_of_birth
         )
 
-        if self._repo.update(entity=updated):
+        if self._repo.update(entity=updated_author):
             print("Author updated")
         else:
             print("Author not updated")
@@ -102,7 +103,6 @@ class AuthorMenuDispatcher(CrudDispatcher):
             print("Author deleted")
         else:
             print("Author not deleted")
-
 
     def show_books(self) -> None:
         author_id = read_int("Enter author ID: ")
