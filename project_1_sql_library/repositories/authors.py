@@ -2,6 +2,7 @@
 
 from sqlalchemy import select, or_
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 
 from models.author_model import AuthorModel
 from models.book_model import BookModel
@@ -17,7 +18,12 @@ class AuthorRepository(IAuthorRepository):
     def add(self, entity: AuthorModel) -> int:
         """Add an author to the database"""
         self._session.add(entity)
-        self._session.commit()
+
+        try:
+            self._session.commit()
+        except IntegrityError:
+            self._session.rollback()
+            raise
 
         return entity.id
 
@@ -46,7 +52,12 @@ class AuthorRepository(IAuthorRepository):
         update_author_model.birth_date = entity.birth_date
 
         self._session.add(update_author_model)
-        self._session.commit()
+
+        try:
+            self._session.commit()
+        except IntegrityError:
+            self._session.rollback()
+            raise
 
         return True
 
@@ -56,7 +67,12 @@ class AuthorRepository(IAuthorRepository):
 
         if delete_author_model is not None:
             self._session.delete(delete_author_model)
-            self._session.commit()
+
+            try:
+                self._session.commit()
+            except IntegrityError:
+                self._session.rollback()
+                raise
 
             return True
 

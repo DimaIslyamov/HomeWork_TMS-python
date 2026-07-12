@@ -2,6 +2,7 @@
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 
 from models.book_model import BookModel
 from models.genre_model import GenreModel
@@ -17,7 +18,12 @@ class GenreRepository(IGenreRepository):
     def add(self, entity: GenreModel) -> int:
         """Add Genre to database."""
         self._session.add(entity)
-        self._session.commit()
+
+        try:
+            self._session.commit()
+        except IntegrityError:
+            self._session.rollback()
+            raise
 
         return entity.id
 
@@ -42,7 +48,12 @@ class GenreRepository(IGenreRepository):
             return False
 
         genre_model.name = entity.name
-        self._session.commit()
+
+        try:
+            self._session.commit()
+        except IntegrityError:
+            self._session.rollback()
+            raise
 
         return True
 
@@ -51,8 +62,15 @@ class GenreRepository(IGenreRepository):
         genre_model = self._session.get(GenreModel, entity_id)
         if genre_model is not None:
             self._session.delete(genre_model)
-            self._session.commit()
+
+            try:
+                self._session.commit()
+            except IntegrityError:
+                self._session.rollback()
+                raise
+
             return True
+
         return False
 
     def get_by_name(self, name: str) -> list[GenreModel]:

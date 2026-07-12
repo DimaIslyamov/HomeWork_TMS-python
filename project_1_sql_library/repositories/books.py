@@ -1,7 +1,8 @@
 """Books repository module."""
 
-from sqlalchemy import select, or_, and_
+from sqlalchemy import select, or_
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 
 from models.author_model import AuthorModel
 from models.genre_model import GenreModel
@@ -18,7 +19,12 @@ class BookRepository(IBookRepository):
     def add(self, entity: BookModel) -> int:
         """Add a book to the database"""
         self._session.add(entity)
-        self._session.commit()
+
+        try:
+            self._session.commit()
+        except IntegrityError:
+            self._session.rollback()
+            raise
 
         return entity.id
 
@@ -47,7 +53,12 @@ class BookRepository(IBookRepository):
         update_book_model.description = entity.description
 
         self._session.add(update_book_model)
-        self._session.commit()
+
+        try:
+            self._session.commit()
+        except IntegrityError:
+            self._session.rollback()
+            raise
 
         return True
 
@@ -57,7 +68,12 @@ class BookRepository(IBookRepository):
 
         if delete_book_model is not None:
             self._session.delete(delete_book_model)
-            self._session.commit()
+
+            try:
+                self._session.commit()
+            except IntegrityError:
+                self._session.rollback()
+                raise
 
             return True
 
@@ -84,7 +100,12 @@ class BookRepository(IBookRepository):
             return False
 
         book.authors.append(author)
-        self._session.commit()
+
+        try:
+            self._session.commit()
+        except IntegrityError:
+            self._session.rollback()
+            raise
 
         return True
 
@@ -100,8 +121,13 @@ class BookRepository(IBookRepository):
         if genre in book.genres:
             return False
 
-        book.genres.add(genre)
-        self._session.commit()
+        book.genres.append(genre)
+
+        try:
+            self._session.commit()
+        except IntegrityError:
+            self._session.rollback()
+            raise 
 
         return True
 
@@ -109,7 +135,7 @@ class BookRepository(IBookRepository):
         """Get all authors of a book."""
         statement = (
             select(AuthorModel)
-            .join(AuthorModel)
+            .join(AuthorModel.books)
             .where(BookModel.id == book_id)
             .order_by(AuthorModel.id)
         )
@@ -119,7 +145,7 @@ class BookRepository(IBookRepository):
         """Get all genres of a book."""
         statement = (
             select(GenreModel)
-            .join(GenreModel)
+            .join(GenreModel.books)
             .where(BookModel.id == book_id)
             .order_by(GenreModel.id)
         )
