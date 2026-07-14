@@ -31,8 +31,7 @@ class BookRepository(IBookRepository):
     #  спросить gpt про этот n+1 - преподаватель сказал написать так
     def get_by_id(self, entity_id: int) -> BookModel | None:
         """Get a book by its id"""
-        stmt = select(BookModel).where(BookModel.id == entity_id).options(
-            selectinload(BookModel.authors))
+        stmt = select(BookModel).where(BookModel.id == entity_id).options(selectinload(BookModel.authors))
 
         return self._session.scalar(stmt)
 

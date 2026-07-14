@@ -1,4 +1,4 @@
-.PHONY: install install-dev run lint typecheck clean
+.PHONY: install install-dev run lint typecheck test clean
 
 VENV := .venv
 
@@ -25,6 +25,10 @@ lint:
 
 typecheck:
 	$(PYTHON) -m mypy .
+
+
+test:
+	$(PYTHON) -m pytest
 
 
 clean:
