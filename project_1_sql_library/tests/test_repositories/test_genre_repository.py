@@ -209,9 +209,6 @@ def test_add_duplicate_genre_raises_integrity_error(
     assert len(genre_repository.get_all()) == 1
 
 
-
-
-
 def test_get_books_returns_books_assigned_to_genre(
     genre_repository: GenreRepository,
     book_repository: BookRepository,

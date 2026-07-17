@@ -130,6 +130,7 @@ class BookRepository(IBookRepository):
         except IntegrityError:
             self._session.rollback()
             raise
+
         return True
 
     def get_authors(self, book_id: int) -> list[AuthorModel]:
