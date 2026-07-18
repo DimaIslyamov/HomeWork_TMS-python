@@ -112,6 +112,22 @@ def test_update_returns_false_for_missing_author(
     assert result is False
 
 
+def test_update_returns_false_when_author_has_no_id(
+    author_repository: AuthorRepository,
+) -> None:
+    """Repository should return False when author has no id."""
+
+    author = AuthorModel(
+        first_name="Robert",
+        last_name="Martin",
+        birth_date=date(1952, 12, 5),
+    )
+
+    result = author_repository.update(author)
+
+    assert result is False
+
+
 def test_delete_existing_author(
     author_repository: AuthorRepository,
 ) -> None:
@@ -170,6 +186,24 @@ def test_get_by_name_matches_first_or_last_name(
     }
 
 
+def test_get_by_name_returns_empty_list_when_no_matches(
+    author_repository: AuthorRepository,
+) -> None:
+    """Repository should return an empty list when exact name is missing."""
+
+    author_repository.add(
+        AuthorModel(
+            first_name="Robert",
+            last_name="Martin",
+            birth_date=date(1952, 12, 5),
+        )
+    )
+
+    authors = author_repository.get_by_name("Unknown")
+
+    assert authors == []
+
+
 def test_search_by_name_is_partial_and_case_insensitive(
     author_repository: AuthorRepository,
 ) -> None:
@@ -195,6 +229,24 @@ def test_search_by_name_is_partial_and_case_insensitive(
     assert len(authors) == 2
 
 
+def test_search_by_name_returns_empty_list_when_no_matches(
+    author_repository: AuthorRepository,
+) -> None:
+    """Repository should return an empty list when no partial name matches."""
+
+    author_repository.add(
+        AuthorModel(
+            first_name="Robert",
+            last_name="Martin",
+            birth_date=date(1952, 12, 5),
+        )
+    )
+
+    authors = author_repository.search_by_name("ZZZ")
+
+    assert authors == []
+
+
 def test_add_duplicate_author_raises_integrity_error(
     author_repository: AuthorRepository,
 ) -> None:
@@ -217,3 +269,31 @@ def test_add_duplicate_author_raises_integrity_error(
         author_repository.add(duplicate_author)
 
     assert len(author_repository.get_all()) == 1
+
+
+def test_get_books_returns_empty_list_when_author_has_no_books(
+    author_repository: AuthorRepository,
+) -> None:
+    """Repository should return an empty list for an author without books."""
+
+    author_id = author_repository.add(
+        AuthorModel(
+            first_name="Robert",
+            last_name="Martin",
+            birth_date=date(1952, 12, 5),
+        )
+    )
+
+    books = author_repository.get_books(author_id)
+
+    assert books == []
+
+
+def test_get_books_returns_empty_list_for_missing_author(
+    author_repository: AuthorRepository,
+) -> None:
+    """Repository should return an empty list for a missing author."""
+
+    books = author_repository.get_books(999)
+
+    assert books == []

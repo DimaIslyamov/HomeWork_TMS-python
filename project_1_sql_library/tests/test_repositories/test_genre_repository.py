@@ -9,12 +9,6 @@ from models.genre_model import GenreModel
 from repositories.genres import GenreRepository
 from repositories.books import BookRepository
 
-from tests.conftest import genre_repository
-
-# def test_something(repository: SomeRepository) -> None:
-#     # Arrange — подготовка данных
-#     # Act — выполнение проверяемого действия
-#     # Assert — проверка результата
 
 def test_add_and_get_by_id(
         genre_repository: GenreRepository
@@ -120,7 +114,6 @@ def test_delete_existing_genre(
     assert genre_repository.get_by_id(genre_id) is None
 
 
-
 def test_delete_returns_false_for_missing_genre(
     genre_repository: GenreRepository,
 ) -> None:
@@ -141,7 +134,6 @@ def test_get_by_name_returns_exact_match(
     genre_repository.add(GenreModel(name="Dark Fantasy"))
 
     genres = genre_repository.get_by_name("Fantasy")
-
 
     assert len(genres) == 1
     assert genres[0].name == "Fantasy"
@@ -241,3 +233,25 @@ def test_get_books_returns_books_assigned_to_genre(
 
     assert len(books) == 1
     assert books[0].title == "The Hobbit"
+
+
+def test_get_books_returns_empty_list_when_genre_has_no_books(
+    genre_repository: GenreRepository,
+) -> None:
+    """Repository should return an empty list for a genre without books."""
+
+    genre_id = genre_repository.add(GenreModel(name="Fantasy"))
+
+    books = genre_repository.get_books(genre_id)
+
+    assert books == []
+
+
+def test_get_books_returns_empty_list_for_missing_genre(
+    genre_repository: GenreRepository,
+) -> None:
+    """Repository should return an empty list for a missing genre."""
+
+    books = genre_repository.get_books(999)
+
+    assert books == []
