@@ -1,14 +1,2 @@
-from django.shortcuts import render
+"""Views for the posts application."""
 
-
-def home(request):
-    context = {
-        'page_title': 'Home Page',
-        'student_name': 'Dima',
-    }
-
-    return render(
-        request=request,
-        template_name='posts/home.html',
-        context=context
-    )

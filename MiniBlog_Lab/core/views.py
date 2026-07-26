@@ -1,4 +1,6 @@
+from django.http import HttpResponse
 from django.shortcuts import render
+
 
 def home(request):
     context = {
@@ -14,3 +16,16 @@ def about(request):
 
 def contact(request):
     return render(request, 'core/contacts.html')
+
+
+def request_demo(request):
+    student = request.GET.get('student')
+    course = request.GET.get('course')
+
+    return HttpResponse(
+        f"""
+        <h2>Request Demo</h2>
+        Student: {student}<br>
+        Course: {course}
+        """
+    )

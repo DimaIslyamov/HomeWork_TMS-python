@@ -5,6 +5,4 @@ from posts import views
 
 app_name = 'posts'
 
-urlpatterns = [
-    path("", views.home, name="home"),
-]
+urlpatterns = []
