@@ -1,5 +1,6 @@
-from django.http import HttpResponse
 from django.shortcuts import render
+
+from core.forms import DemoRequestForm
 
 
 def home(request):
@@ -7,25 +8,48 @@ def home(request):
         'page_title': 'Home Page',
         'student_name': 'Dima',
     }
-    return render(request, 'core/home.html', context)
+    return render(
+        request=request,
+        template_name='core/home.html',
+        context=context
+    )
 
 
 def about(request):
-    return render(request, 'core/about.html')
+    return render(
+        request=request,
+        template_name='core/about.html'
+    )
 
 
 def contact(request):
-    return render(request, 'core/contacts.html')
+    return render(
+        request=request,
+        template_name='core/contacts.html'
+    )
 
 
 def request_demo(request):
-    student = request.GET.get('student')
-    course = request.GET.get('course')
+    student_name = None
+    course_name = None
 
-    return HttpResponse(
-        f"""
-        <h2>Request Demo</h2>
-        Student: {student}<br>
-        Course: {course}
-        """
+    if request.method == "POST":
+        form = DemoRequestForm(request.POST)
+
+        if form.is_valid():
+            student_name = form.cleaned_data["student"]
+            course_name = form.cleaned_data["course"]
+    else:
+        form = DemoRequestForm()
+
+    context = {
+        "form": form,
+        "student_name": student_name,
+        "course_name": course_name,
+    }
+
+    return render(
+        request=request,
+        template_name="core/request_demo.html",
+        context=context,
     )
