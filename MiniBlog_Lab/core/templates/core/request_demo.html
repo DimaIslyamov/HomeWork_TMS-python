@@ -10,9 +10,10 @@
     </button>
 </form>
 
-{% if student_name and course_name %}
-    <h2>Request received</h2>
+{% if result %}
+    <hr>
 
-    <p>Student: {{ student_name }}</p>
-    <p>Course: {{ course_name }}</p>
+    <h2>Cleaned data</h2>
+
+    <pre>{{ result }}</pre>
 {% endif %}

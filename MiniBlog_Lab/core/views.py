@@ -30,26 +30,24 @@ def contact(request):
 
 
 def request_demo(request):
-    student_name = None
-    course_name = None
+    result = None
 
     if request.method == "POST":
         form = DemoRequestForm(request.POST)
 
         if form.is_valid():
-            student_name = form.cleaned_data["student"]
-            course_name = form.cleaned_data["course"]
+            result = form.cleaned_data
     else:
         form = DemoRequestForm()
 
     context = {
         "form": form,
-        "student_name": student_name,
-        "course_name": course_name,
+        "result": result,
     }
 
     return render(
-        request=request,
-        template_name="core/request_demo.html",
-        context=context,
+        request,
+        "core/request_demo.html",
+        context,
     )
+
