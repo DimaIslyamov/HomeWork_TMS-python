@@ -1,7 +1,12 @@
 """Views for the posts application."""
+from django.urls import reverse_lazy
+from django.views.generic import (
+    ListView,
+    DetailView,
+    CreateView,
+)
 
-from django.views.generic import ListView, DetailView
-
+from posts.forms import PostForm
 from posts.models import Post
 
 
@@ -17,3 +22,11 @@ class PostDetailView(DetailView):
 
     model = Post
     context_object_name = 'post'
+
+
+class PostCreateView(CreateView):
+    """Create a new post."""
+
+    model = Post
+    form_class = PostForm
+    success_url = reverse_lazy('posts:post_list')
