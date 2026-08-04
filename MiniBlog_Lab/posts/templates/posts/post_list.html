@@ -3,16 +3,59 @@
 {% block title %}Posts{% endblock %}
 
 {% block content %}
-    <h1>Posts</h1>
+    <section class="page-heading">
+        <div>
+            <p class="eyebrow">Blog CRUD</p>
+            <h1>Posts</h1>
+        </div>
 
-    {% for post in posts %}
-    <h2>
-        <a href="{% url 'posts:post_detail' post.pk %}">
-            {{ post.title }}
+        <a class="button button-primary" href="{% url 'posts:post_create' %}">
+            Create post
         </a>
-    </h2>
-{% empty %}
-    <p>No posts yet.</p>
-{% endfor %}
+    </section>
+
+    <section class="post-list" aria-label="Post list">
+        {% for post in posts %}
+            <article class="post-card">
+                <div class="post-card-main">
+                    <div class="post-card-header">
+                        <h2>
+                            <a href="{% url 'posts:post_detail' post.pk %}">
+                                {{ post.title }}
+                            </a>
+                        </h2>
+
+                        {% if post.is_published %}
+                            <span class="status status-published">Published</span>
+                        {% else %}
+                            <span class="status status-draft">Draft</span>
+                        {% endif %}
+                    </div>
+
+                    <p class="post-excerpt">
+                        {{ post.content|truncatewords:32 }}
+                    </p>
+
+                    <p class="post-meta">
+                        Created {{ post.created_at|date:"M d, Y H:i" }}
+                    </p>
+                </div>
+
+                <div class="post-actions" aria-label="Post actions">
+                    <a class="button button-secondary" href="{% url 'posts:post_detail' post.pk %}">View</a>
+                    <a class="button button-secondary" href="{% url 'posts:post_update' post.pk %}">Edit</a>
+                    <a class="button button-danger" href="{% url 'posts:post_delete' post.pk %}">Delete</a>
+                </div>
+            </article>
+        {% empty %}
+            <div class="empty-state">
+                <h2>No posts yet</h2>
+                <p>Create the first post to start filling the blog.</p>
+                <a class="button button-primary" href="{% url 'posts:post_create' %}">
+                    Create post
+                </a>
+            </div>
+        {% endfor %}
+    </section>
 
 {% endblock %}

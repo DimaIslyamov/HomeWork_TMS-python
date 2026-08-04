@@ -3,7 +3,7 @@ from django.urls import reverse_lazy
 from django.views.generic import (
     ListView,
     DetailView,
-    CreateView,
+    CreateView, UpdateView, DeleteView,
 )
 
 from posts.forms import PostForm
@@ -29,4 +29,19 @@ class PostCreateView(CreateView):
 
     model = Post
     form_class = PostForm
+    success_url = reverse_lazy('posts:post_list')
+
+
+class PostUpdateView(UpdateView):
+    """Update a post."""
+
+    model = Post
+    form_class = PostForm
+    success_url = reverse_lazy('posts:post_list')
+
+
+class PostDeleteView(DeleteView):
+    """Delete a post."""
+
+    model = Post
     success_url = reverse_lazy('posts:post_list')

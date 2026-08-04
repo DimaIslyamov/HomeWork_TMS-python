@@ -3,12 +3,41 @@
 {% block title %}{{ post.title }}{% endblock %}
 
 {% block content %}
-    <article>
-        <h1>{{ post.title }}</h1>
-        <p>{{ post.content }}</p>
-    </article>
-
-    <p>
+    <nav class="breadcrumb" aria-label="Post navigation">
         <a href="{% url 'posts:post_list' %}">Back to posts</a>
-    </p>
+    </nav>
+
+    <article class="post-detail">
+        <header class="post-detail-header">
+            <div>
+                {% if post.is_published %}
+                    <span class="status status-published">Published</span>
+                {% else %}
+                    <span class="status status-draft">Draft</span>
+                {% endif %}
+
+                <h1>{{ post.title }}</h1>
+            </div>
+
+            <div class="post-actions">
+                <a class="button button-secondary" href="{% url 'posts:post_update' post.pk %}">Edit</a>
+                <a class="button button-danger" href="{% url 'posts:post_delete' post.pk %}">Delete</a>
+            </div>
+        </header>
+
+        <div class="post-content">
+            {{ post.content|linebreaks }}
+        </div>
+
+        <footer class="post-meta-grid">
+            <div>
+                <span>Created</span>
+                <strong>{{ post.created_at|date:"M d, Y H:i" }}</strong>
+            </div>
+            <div>
+                <span>Updated</span>
+                <strong>{{ post.updated_at|date:"M d, Y H:i" }}</strong>
+            </div>
+        </footer>
+    </article>
 {% endblock %}

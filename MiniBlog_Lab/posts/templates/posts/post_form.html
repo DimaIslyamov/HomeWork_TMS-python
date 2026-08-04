@@ -1,18 +1,46 @@
 {% extends "core/base.html" %}
 
-{% block title %}Create post{% endblock %}
+{% block title %}
+    {% if object %}
+        Update post
+    {% else %}
+        Create post
+    {% endif %}
+{% endblock %}
 
 {% block content %}
-    <h1>Create post</h1>
+    <section class="page-heading">
+        <div>
+            <p class="eyebrow">Post editor</p>
+            {% if object %}
+                <h1>Update post</h1>
+            {% else %}
+                <h1>Create post</h1>
+            {% endif %}
+        </div>
+    </section>
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
+    <section class="form-panel">
+        <form method="post" class="post-form">
+            {% csrf_token %}
 
-        <button type="submit">Save</button>
-    </form>
+            {{ form.as_p }}
 
-    <p>
-        <a href="{% url 'posts:post_list' %}">Back to posts</a>
-    </p>
+            <div class="form-actions">
+                <button class="button button-primary" type="submit">
+                    {% if object %}Update{% else %}Create{% endif %}
+                </button>
+
+                {% if object %}
+                    <a class="button button-secondary" href="{% url 'posts:post_detail' object.pk %}">
+                        Cancel
+                    </a>
+                {% else %}
+                    <a class="button button-secondary" href="{% url 'posts:post_list' %}">
+                        Cancel
+                    </a>
+                {% endif %}
+            </div>
+        </form>
+    </section>
 {% endblock %}
