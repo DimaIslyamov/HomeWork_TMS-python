@@ -6,7 +6,9 @@
     <section class="page-heading">
         <div>
             <p class="eyebrow">Blog CRUD</p>
-            <h1>Posts</h1>
+<!--            <h1>Posts</h1>-->
+            <h2>{{ page_title }}</h2>
+            <p>Количество постов: {{ posts_count }}</p>
         </div>
 
         <a class="button button-primary" href="{% url 'posts:post_create' %}">
