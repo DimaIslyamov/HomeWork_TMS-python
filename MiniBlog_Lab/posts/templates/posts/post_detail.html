@@ -22,8 +22,15 @@
             </div>
 
             <div class="post-actions">
-                <a class="button button-secondary" href="{% url 'posts:post_update' post.pk %}">Edit</a>
-                <a class="button button-danger" href="{% url 'posts:post_delete' post.pk %}">Delete</a>
+                {% if user == post.author %}
+                    <a class="button button-secondary" href="{% url 'posts:post_update' post.pk %}">
+                        Edit
+                    </a>
+
+                    <a class="button button-danger" href="{% url 'posts:post_delete' post.pk %}">
+                        Delete
+                    </a>
+                {% endif %}
             </div>
         </header>
 

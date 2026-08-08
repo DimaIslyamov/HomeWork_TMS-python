@@ -93,6 +93,31 @@ a:hover {
     text-decoration: none;
 }
 
+.nav-user {
+    color: var(--muted);
+    padding: 8px 10px;
+    font-weight: 700;
+}
+
+.nav-logout-form {
+    margin: 0;
+}
+
+.nav-link-button {
+    border: 0;
+    background: transparent;
+    color: var(--secondary);
+    border-radius: 8px;
+    padding: 8px 10px;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.nav-link-button:hover {
+    background: var(--surface-muted);
+}
+
 .site-main {
     padding: 42px 0 56px;
 }

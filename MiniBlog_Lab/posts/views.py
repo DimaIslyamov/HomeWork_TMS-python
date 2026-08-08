@@ -1,5 +1,9 @@
 """Views for the posts application."""
 
+from django.contrib.auth.mixins import (
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+)
 from django.urls import reverse_lazy, reverse
 from django.views.generic import (
     ListView,
@@ -41,7 +45,7 @@ class PostDetailView(DetailView):
         return Post.objects.filter(is_published=True)
 
 
-class PostCreateView(CreateView):
+class PostCreateView(LoginRequiredMixin, CreateView):
     """Create a new post."""
 
     model = Post
@@ -49,12 +53,24 @@ class PostCreateView(CreateView):
     template_name = 'posts/post_form.html'
     success_url = reverse_lazy('posts:post_list')
 
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
 
-class PostUpdateView(UpdateView):
+
+class PostUpdateView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    UpdateView
+):
     """Update a post."""
 
     model = Post
     form_class = PostForm
+
+    def test_func(self):
+        post = self.get_object()
+        return post.author == self.request.user
 
     def get_success_url(self):
         return reverse(
@@ -63,8 +79,16 @@ class PostUpdateView(UpdateView):
         )
 
 
-class PostDeleteView(DeleteView):
+class PostDeleteView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    DeleteView
+):
     """Delete a post."""
 
     model = Post
     success_url = reverse_lazy('posts:post_list')
+
+    def test_func(self):
+        post = self.get_object()
+        return post.author == self.request.user

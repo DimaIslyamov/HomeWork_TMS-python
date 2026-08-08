@@ -11,9 +11,11 @@
             <p>Количество постов: {{ posts_count }}</p>
         </div>
 
-        <a class="button button-primary" href="{% url 'posts:post_create' %}">
-            Create post
-        </a>
+        {% if user.is_authenticated %}
+            <a class="button button-primary" href="{% url 'posts:post_create' %}">
+                Create post
+            </a>
+        {% endif %}
     </section>
 
     <section class="post-list" aria-label="Post list">
@@ -45,8 +47,15 @@
 
                 <div class="post-actions" aria-label="Post actions">
                     <a class="button button-secondary" href="{% url 'posts:post_detail' post.pk %}">View</a>
-                    <a class="button button-secondary" href="{% url 'posts:post_update' post.pk %}">Edit</a>
-                    <a class="button button-danger" href="{% url 'posts:post_delete' post.pk %}">Delete</a>
+                    {% if user == post.author %}
+                        <a class="button button-secondary" href="{% url 'posts:post_update' post.pk %}">
+                            Edit
+                        </a>
+
+                        <a class="button button-danger" href="{% url 'posts:post_delete' post.pk %}">
+                            Delete
+                        </a>
+                    {% endif %}
                 </div>
             </article>
         {% empty %}
