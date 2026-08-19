@@ -17,8 +17,16 @@
                 {% endif %}
 
                 <h1>{{ post.title }}</h1>
-                <h2>{{ page_title }}</h2>
-                <p>ID публикации: {{ post_id }}</p>
+
+                {% if post.category %}
+                    <p class="post-meta">
+                        Category: {{ post.category.title }}
+                    </p>
+                {% else %}
+                    <p class="post-meta">
+                        Category: No category
+                    </p>
+                {% endif %}
             </div>
 
             <div class="post-actions">

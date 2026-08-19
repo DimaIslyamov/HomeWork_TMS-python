@@ -24,7 +24,7 @@
                 <div class="post-card-main">
                     <div class="post-card-header">
                         <h2>
-                            <a href="{% url 'posts:post_detail' post.pk %}">
+                            <a href="{{ post.get_absolute_url }}">
                                 {{ post.title }}
                             </a>
                         </h2>
@@ -43,12 +43,22 @@
                     <p class="post-meta">
                         Created {{ post.created_at|date:"M d, Y H:i" }}
                     </p>
+
+                    {% if post.category %}
+                        <p class="post-meta">
+                            Category: {{ post.category.title }}
+                        </p>
+                    {% else %}
+                        <p class="post-meta">
+                            Category: No category
+                        </p>
+                    {% endif %}
                 </div>
 
                 <div class="post-actions" aria-label="Post actions">
-                    <a class="button button-secondary" href="{% url 'posts:post_detail' post.pk %}">View</a>
+                    <a class="button button-secondary" href="{{ post.get_absolute_url }}">View</a>
                     {% if user == post.author %}
-                        <a class="button button-secondary" href="{% url 'posts:post_update' post.pk %}">
+                        <a class="button button-secondary" href="{{ post.get_absolute_url }}">
                             Edit
                         </a>
 
@@ -68,5 +78,31 @@
             </div>
         {% endfor %}
     </section>
+
+{% if is_paginated %}
+    <nav class="pagination" aria-label="Pagination">
+        {% if page_obj.has_previous %}
+            <a
+                class="button button-secondary"
+                href="?page={{ page_obj.previous_page_number }}"
+            >
+                Previous
+            </a>
+        {% endif %}
+
+        <span>
+            Page {{ page_obj.number }} of {{ paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+            <a
+                class="button button-secondary"
+                href="?page={{ page_obj.next_page_number }}"
+            >
+                Next
+            </a>
+        {% endif %}
+    </nav>
+{% endif %}
 
 {% endblock %}

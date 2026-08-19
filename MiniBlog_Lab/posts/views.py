@@ -21,11 +21,15 @@ class PostListView(ListView):
     model = Post
     template_name = 'posts/post_list.html'
     context_object_name = 'posts'
+    paginate_by = 5
 
     def get_queryset(self):
-        return Post.objects.filter(
-            is_published=True
-        ).order_by('-created_at')
+        return (
+            Post.objects
+            .filter(is_published=True)
+            .select_related('author', 'category')
+            .order_by('-created_at')
+        )
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -42,7 +46,11 @@ class PostDetailView(DetailView):
     context_object_name = 'post'
 
     def get_queryset(self):
-        return Post.objects.filter(is_published=True)
+        return (
+            Post.objects
+            .filter(is_published=True)
+            .select_related('author', 'category')
+        )
 
 
 class PostCreateView(LoginRequiredMixin, CreateView):
@@ -71,12 +79,6 @@ class PostUpdateView(
     def test_func(self):
         post = self.get_object()
         return post.author == self.request.user
-
-    def get_success_url(self):
-        return reverse(
-            'posts:post_detail',
-            kwargs={'pk': self.object.pk},
-        )
 
 
 class PostDeleteView(
