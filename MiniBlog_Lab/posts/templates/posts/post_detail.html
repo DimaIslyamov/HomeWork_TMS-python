@@ -57,4 +57,45 @@
             </div>
         </footer>
     </article>
+
+    <section class="comments-section">
+        <h2>Comments</h2>
+
+                {% for comment in post.comments.all %}
+            <article class="comment">
+                <p>
+                    {% if comment.author %}
+                        {{ comment.author.username }}
+                    {% else %}
+                        Deleted user
+                    {% endif %}
+                </p>
+
+                <div>
+                    {{ comment.content|linebreaks }}
+                </div>
+
+                <small>
+                    {{ comment.created_at|date:"M d, Y H:i" }}
+                </small>
+            </article>
+        {% empty %}
+            <p>No comments yet.</p>
+        {% endfor %}
+
+        {% if user.is_authenticated %}
+            <form method="post">
+                {% csrf_token %}
+                {{ comment_form.as_p }}
+
+                <button type="submit">
+                    Add comment
+                </button>
+            </form>
+        {% else %}
+            <p>
+                Please log in to leave a comment.
+            </p>
+        {% endif %}
+    </section>
 {% endblock %}
