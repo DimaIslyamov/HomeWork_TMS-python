@@ -78,6 +78,13 @@
                 <small>
                     {{ comment.created_at|date:"M d, Y H:i" }}
                 </small>
+
+                {% if user == comment.author %}
+                    <a href="{% url 'posts:comment_delete' comment.pk %}">
+                        Delete
+                    </a>
+                {% endif %}
+                
             </article>
         {% empty %}
             <p>No comments yet.</p>

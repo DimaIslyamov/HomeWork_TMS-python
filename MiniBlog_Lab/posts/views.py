@@ -14,7 +14,7 @@ from django.views.generic import (
 )
 
 from posts.forms import PostForm, CommentForm
-from posts.models import Post
+from posts.models import Post, Comment
 
 
 class PostListView(ListView):
@@ -121,3 +121,15 @@ class PostDeleteView(
     def test_func(self):
         post = self.get_object()
         return post.author == self.request.user
+
+
+class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Comment
+    template_name = 'posts/comment_confirm_delete.html'
+
+    def test_func(self):
+        comment = self.get_object()
+        return comment.author == self.request.user
+
+    def get_success_url(self):
+        return self.object.post.get_absolute_url()
