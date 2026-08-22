@@ -27,15 +27,29 @@
                         Category: No category
                     </p>
                 {% endif %}
+
+                <p class="post-meta">
+                    By {{ post.author.username }}
+                </p>
+            </div>
+
+            <div class="tag-list" aria-label="Post tags">
+                {% for tag in post.tags.all %}
+                    <a class="tag" href="{% url 'posts:post_list_by_tag' tag.id %}">
+                        {{ tag.name }}
+                    </a>
+                {% empty %}
+                    <span class="tag tag-muted">No tags</span>
+                {% endfor %}
             </div>
 
             <div class="post-actions">
                 {% if user == post.author %}
-                    <a class="button button-secondary" href="{% url 'posts:post_update' post.pk %}">
+                    <a class="button button-secondary" href="{% url 'posts:post_update' post.slug %}">
                         Edit
                     </a>
 
-                    <a class="button button-danger" href="{% url 'posts:post_delete' post.pk %}">
+                    <a class="button button-danger" href="{% url 'posts:post_delete' post.slug %}">
                         Delete
                     </a>
                 {% endif %}
@@ -59,49 +73,53 @@
     </article>
 
     <section class="comments-section">
-        <h2>Comments</h2>
+        <div class="section-heading">
+            <h2>Comments</h2>
+        </div>
 
-                {% for comment in post.comments.all %}
+        <div class="comment-list">
+            {% for comment in post.comments.all %}
             <article class="comment">
-                <p>
-                    {% if comment.author %}
-                        {{ comment.author.username }}
-                    {% else %}
-                        Deleted user
-                    {% endif %}
-                </p>
+                <header class="comment-header">
+                    <strong>
+                        {% if comment.author %}
+                            {{ comment.author.username }}
+                        {% else %}
+                            Deleted user
+                        {% endif %}
+                    </strong>
 
-                <div>
+                    <span>{{ comment.created_at|date:"M d, Y H:i" }}</span>
+                </header>
+
+                <div class="comment-body">
                     {{ comment.content|linebreaks }}
                 </div>
 
-                <small>
-                    {{ comment.created_at|date:"M d, Y H:i" }}
-                </small>
-
                 {% if user == comment.author %}
-                    <a href="{% url 'posts:comment_delete' comment.pk %}">
+                    <a class="button button-danger button-small" href="{% url 'posts:comment_delete' comment.pk %}">
                         Delete
                     </a>
                 {% endif %}
-                
+
             </article>
         {% empty %}
-            <p>No comments yet.</p>
+            <p class="empty-copy">No comments yet.</p>
         {% endfor %}
+        </div>
 
         {% if user.is_authenticated %}
-            <form method="post">
+            <form method="post" class="post-form comment-form">
                 {% csrf_token %}
                 {{ comment_form.as_p }}
 
-                <button type="submit">
+                <button class="button button-primary" type="submit">
                     Add comment
                 </button>
             </form>
         {% else %}
-            <p>
-                Please log in to leave a comment.
+            <p class="empty-copy">
+                Please <a href="{% url 'login' %}">log in</a> to leave a comment.
             </p>
         {% endif %}
     </section>

@@ -4,7 +4,7 @@
 
 {% block content %}
     <nav class="breadcrumb" aria-label="Post navigation">
-        <a href="{% url 'posts:post_detail' post.pk %}">Back to post</a>
+        <a href="{{ post.get_absolute_url }}">Back to post</a>
     </nav>
 
     <section class="delete-panel">
@@ -19,7 +19,7 @@
         <form method="post" class="delete-form">
             {% csrf_token %}
             <button class="button button-danger" type="submit">Delete</button>
-            <a class="button button-secondary" href="{% url 'posts:post_detail' post.pk %}">
+            <a class="button button-secondary" href="{{ post.get_absolute_url }}">
                 Cancel
             </a>
         </form>

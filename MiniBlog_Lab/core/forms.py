@@ -23,7 +23,7 @@ class DemoRequestForm(forms.Form):
             ("python", "Python"),
             ("java", "Java"),
             ("flask", "Flask"),
-            ("Django", "Django"),
+            ("django", "Django"),
         ]
     )
 
@@ -58,9 +58,8 @@ class DemoRequestForm(forms.Form):
 
         return student
 
-    @property
     def clean(self):
-        cleaned_data = super().clean
+        cleaned_data = super().clean()
 
         course = cleaned_data.get("course")
         email = cleaned_data.get("email")

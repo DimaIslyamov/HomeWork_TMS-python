@@ -11,13 +11,19 @@ class Category(models.Model):
         return self.title
 
 
+class Tag(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Post(models.Model):
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="posts",
     )
-
     category = models.ForeignKey(
         Category,
         on_delete=models.SET_NULL,
@@ -25,7 +31,11 @@ class Post(models.Model):
         null=True,
         blank=True,
     )
-
+    tags = models.ManyToManyField(
+        Tag,
+        related_name="posts",
+        blank=True,
+    )
     title = models.CharField(max_length=200)
     slug = models.SlugField(max_length=255, unique=True)
     content = models.TextField()
@@ -44,7 +54,7 @@ class Post(models.Model):
             counter = 2
 
             while Post.objects.filter(slug=slug).exists():
-                slug = f"{base_slug}--{counter}"
+                slug = f"{base_slug}-{counter}"
                 counter += 1
 
             self.slug = slug

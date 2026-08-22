@@ -5,8 +5,8 @@ from django.contrib.auth.mixins import (
     UserPassesTestMixin,
 )
 from django.contrib.auth.views import redirect_to_login
-from django.shortcuts import redirect
-from django.urls import reverse_lazy, reverse
+from django.shortcuts import redirect, get_object_or_404
+from django.urls import reverse_lazy
 from django.views.generic import (
     ListView,
     DetailView,
@@ -14,7 +14,7 @@ from django.views.generic import (
 )
 
 from posts.forms import PostForm, CommentForm
-from posts.models import Post, Comment
+from posts.models import Post, Comment, Tag
 
 
 class PostListView(ListView):
@@ -26,17 +26,36 @@ class PostListView(ListView):
     paginate_by = 5
 
     def get_queryset(self):
-        return (
+        queryset = (
             Post.objects
             .filter(is_published=True)
             .select_related('author', 'category')
+            .prefetch_related('tags')
             .order_by('-created_at')
         )
 
+        tag_id = self.kwargs.get('tag_id')
+
+        if tag_id:
+            queryset = queryset.filter(tags__id=tag_id)
+
+        return queryset
+
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = super().get_context_data(
+            object_list=object_list,
+            **kwargs,
+        )
+
         context['page_title'] = 'Все публикации'
 
+        tag_id = self.kwargs.get('tag_id')
+
+        if tag_id:
+            context['current_tag'] = get_object_or_404(
+                Tag,
+                pk=tag_id,
+            )
         return context
 
 
@@ -52,7 +71,10 @@ class PostDetailView(DetailView):
             Post.objects
             .filter(is_published=True)
             .select_related('author', 'category')
-            .prefetch_related('comments__author')
+            .prefetch_related(
+                'tags',
+                'comments__author',
+            )
         )
 
     def get_context_data(self, **kwargs):
@@ -102,6 +124,7 @@ class PostUpdateView(
 
     model = Post
     form_class = PostForm
+    template_name = 'posts/post_form.html'
 
     def test_func(self):
         post = self.get_object()
@@ -116,6 +139,7 @@ class PostDeleteView(
     """Delete a post."""
 
     model = Post
+    template_name = 'posts/post_confirm_delete.html'
     success_url = reverse_lazy('posts:post_list')
 
     def test_func(self):

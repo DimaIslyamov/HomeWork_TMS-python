@@ -204,6 +204,12 @@ a:hover {
     color: #ffffff;
 }
 
+.button-small {
+    min-height: 34px;
+    padding: 7px 11px;
+    font-size: 0.9rem;
+}
+
 .post-list {
     display: grid;
     gap: 16px;
@@ -253,6 +259,37 @@ a:hover {
     margin: 14px 0 0;
     color: var(--muted);
     font-size: 0.92rem;
+}
+
+.tag-list {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+}
+
+.tag {
+    display: inline-flex;
+    align-items: center;
+    min-height: 28px;
+    border: 1px solid #cbd8d2;
+    border-radius: 8px;
+    background: #f4faf7;
+    color: var(--primary);
+    padding: 4px 9px;
+    font-size: 0.86rem;
+    font-weight: 800;
+}
+
+.tag:hover {
+    background: #e8f4ef;
+    text-decoration: none;
+}
+
+.tag-muted {
+    background: var(--surface-muted);
+    color: var(--muted);
 }
 
 .post-actions {
@@ -368,6 +405,9 @@ a:hover {
 }
 
 .post-form input[type="text"],
+.post-form input[type="password"],
+.post-form input[type="email"],
+.post-form select,
 .post-form textarea {
     width: 100%;
     border: 1px solid var(--border);
@@ -381,6 +421,10 @@ a:hover {
 .post-form textarea {
     min-height: 180px;
     resize: vertical;
+}
+
+.post-form select[multiple] {
+    min-height: 116px;
 }
 
 .post-form input[type="checkbox"] {
@@ -428,8 +472,82 @@ a:hover {
     max-width: 680px;
 }
 
+.delete-quote {
+    margin: 18px 0;
+    border-left: 4px solid #efcaca;
+    background: #fffafa;
+    color: var(--secondary);
+    padding: 14px 16px;
+}
+
 .danger-text {
     color: var(--danger);
+}
+
+.section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 34px 0 16px;
+}
+
+.section-heading h2 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.comments-section {
+    margin-top: 28px;
+}
+
+.comment-list {
+    display: grid;
+    gap: 12px;
+}
+
+.comment {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px;
+}
+
+.comment-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    color: var(--muted);
+    font-size: 0.92rem;
+}
+
+.comment-header strong {
+    color: var(--text);
+}
+
+.comment-body {
+    margin: 10px 0 14px;
+}
+
+.comment-body p:first-child {
+    margin-top: 0;
+}
+
+.comment-body p:last-child {
+    margin-bottom: 0;
+}
+
+.comment-form {
+    margin-top: 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px;
+}
+
+.empty-copy {
+    color: var(--muted);
 }
 
 .empty-state {
@@ -479,7 +597,8 @@ a:hover {
 
     .post-actions,
     .form-actions,
-    .delete-form {
+    .delete-form,
+    .comment-header {
         align-items: stretch;
         flex-direction: column;
     }

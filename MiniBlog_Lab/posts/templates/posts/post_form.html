@@ -32,7 +32,7 @@
                 </button>
 
                 {% if object %}
-                    <a class="button button-secondary" href="{% url 'posts:post_detail' object.pk %}">
+                    <a class="button button-secondary" href="{{ object.get_absolute_url }}">
                         Cancel
                     </a>
                 {% else %}
