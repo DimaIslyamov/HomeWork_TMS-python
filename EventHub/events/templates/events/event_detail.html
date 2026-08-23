@@ -1,2 +1,19 @@
-<h1>Event detail</h1>
-<p>Slug: {{ slug }}</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ event.title }}</title>
+</head>
+<body>
+    <h1>{{ event.title }}</h1>
+
+    <p>{{ event.description }}</p>
+
+    <p>Category: {{ event.category }}</p>
+    <p>Organizer: {{ event.organizer }}</p>
+
+    <a href="{% url 'events:event_list' %}">
+        Back to events
+    </a>
+</body>
+</html>

@@ -2,11 +2,39 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{ page_title }}</title>
+    <title>
+        {% if category %}
+            Events in {{ category.title }}
+        {% else %}
+            {{ page_title }}
+        {% endif %}
+    </title>
 </head>
 <body>
-    <h1>{{ page_title }}</h1>
-    <p>Total events: {{ events_count }}</p>
+    {% if category %}
+        <h1>Events in {{ category.title }}</h1>
+    {% else %}
+        <h1>{{ page_title }}</h1>
+    {% endif %}
+
+    {% for event in events %}
+        <h2>
+            <a href="{{ event.get_absolute_url }}">
+                {{ event.title }}
+            </a>
+        </h2>
+
+        <p>
+            Category:
+            <a href="{% url 'events:events_by_category' event.category_id %}">
+                {{ event.category.title }}
+            </a>
+        </p>
+
+    {% empty %}
+        <p>No published events.</p>
+    {% endfor %}
+
     <a href="{% url 'events:event_about' %}">About</a>
 </body>
 </html>
