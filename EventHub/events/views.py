@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import (
     ListView,
@@ -31,7 +32,6 @@ class EventListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         category_id = self.kwargs.get("category_id")
 
         context["page_title"] = "All Events"
@@ -44,6 +44,16 @@ class EventListView(ListView):
             )
 
         return context
+
+
+class EventCreateView(LoginRequiredMixin, CreateView):
+    model = Event
+    fields = ["title", "description", "category", "is_published"]
+    template_name = "events/event_form.html"
+
+    def form_valid(self, form):
+        form.instance.organizer = self.request.user
+        return super().form_valid(form)
 
 
 def event_about(request):

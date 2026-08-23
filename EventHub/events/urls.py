@@ -6,6 +6,11 @@ app_name = 'events'
 
 urlpatterns = [
     path("", views.EventListView.as_view(), name="event_list"),
+    path(
+        "create/",
+        views.EventCreateView.as_view(),
+        name="event_create",
+    ),
     path("about/", views.event_about, name="event_about"),
     path(
         "category/<int:category_id>/",
