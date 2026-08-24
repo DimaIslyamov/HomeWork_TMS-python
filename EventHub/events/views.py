@@ -1,5 +1,6 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render, get_object_or_404
+from django.urls import reverse_lazy, reverse
 from django.views.generic import (
     ListView,
     DetailView,
@@ -36,6 +37,7 @@ class EventListView(ListView):
 
         context["page_title"] = "All Events"
         context["events_count"] = context["events"].count()
+        context["categories"] = Category.objects.all()
 
         if category_id:
             context["category"] = get_object_or_404(
@@ -48,16 +50,19 @@ class EventListView(ListView):
 
 class EventCreateView(LoginRequiredMixin, CreateView):
     model = Event
-    fields = ["title", "description", "category", "is_published"]
+    fields = ["title", "slug", "description",
+              "category", "is_published"]
     template_name = "events/event_form.html"
 
     def form_valid(self, form):
         form.instance.organizer = self.request.user
         return super().form_valid(form)
 
+    def get_success_url(self):
+        if self.object.is_published:
+            return self.object.get_absolute_url()
 
-def event_about(request):
-    return render(request, "events/event_about.html")
+        return reverse("events:event_list")
 
 
 class EventDetailView(DetailView):
@@ -66,3 +71,42 @@ class EventDetailView(DetailView):
 
     def get_queryset(self):
         return Event.objects.filter(is_published=True)
+
+
+class EventUpdateView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    UpdateView
+):
+    model = Event
+    fields = ["title", "slug", "description",
+              "category", "is_published"]
+    template_name = "events/event_form.html"
+
+    def test_func(self):
+        event = self.get_object()
+        return event.organizer == self.request.user
+
+    def get_success_url(self):
+        if self.object.is_published:
+            return self.object.get_absolute_url()
+
+        return reverse("events:event_list")
+
+
+class EventDeleteView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    DeleteView,
+):
+    model = Event
+    template_name = "events/event_confirm_delete.html"
+    success_url = reverse_lazy("events:event_list")
+
+    def test_func(self):
+        event = self.get_object()
+        return event.organizer == self.request.user
+
+
+def event_about(request):
+    return render(request, "events/event_about.html")

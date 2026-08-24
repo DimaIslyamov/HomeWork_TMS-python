@@ -1,45 +1,57 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>
+{% extends "base.html" %}
+
+{% block title %}
+    {% if category %}Events in {{ category.title }}{% else %}{{ page_title }}{% endif %} | EventHub
+{% endblock %}
+
+{% block content %}
+    <section class="page-header">
+        <p class="eyebrow">Public catalog</p>
         {% if category %}
-            Events in {{ category.title }}
+            <h1>Events in {{ category.title }}</h1>
+            <p class="lead">{{ events_count }} published event{{ events_count|pluralize }} in this category.</p>
         {% else %}
-            {{ page_title }}
+            <h1>{{ page_title }}</h1>
+            <p class="lead">Discover published events from the EventHub community.</p>
         {% endif %}
-    </title>
-</head>
-<body>
-    {% if category %}
-        <h1>Events in {{ category.title }}</h1>
-    {% else %}
-        <h1>{{ page_title }}</h1>
+    </section>
+
+    {% if categories %}
+        <div class="filter-bar" aria-label="Event categories">
+            <a class="filter-pill {% if not category %}active{% endif %}" href="{% url 'events:event_list' %}">All</a>
+            {% for item in categories %}
+                <a class="filter-pill {% if category and category.pk == item.pk %}active{% endif %}" href="{% url 'events:events_by_category' item.pk %}">
+                    {{ item.title }}
+                </a>
+            {% endfor %}
+        </div>
     {% endif %}
 
-    {% for event in events %}
-        <h2>
-            <a href="{{ event.get_absolute_url }}">
-                {{ event.title }}
-            </a>
-        </h2>
-
-        <p>
-            Category:
-            <a href="{% url 'events:events_by_category' event.category_id %}">
-                {{ event.category.title }}
-            </a>
-        </p>
-
-    {% empty %}
-        <p>No published events.</p>
-    {% endfor %}
-
-    <form method="post" action="{% url 'logout' %}">
-        {% csrf_token %}
-        <button type="submit">Logout</button>
-    </form>
-
-    <a href="{% url 'events:event_about' %}">About</a>
-</body>
-</html>
+    {% if events %}
+        <div class="event-grid">
+            {% for event in events %}
+                <article class="event-card">
+                    <h2>
+                        <a href="{{ event.get_absolute_url }}">{{ event.title }}</a>
+                    </h2>
+                    <div class="meta">
+                        <span>{{ event.category.title }}</span>
+                        <span>Organizer: {{ event.organizer }}</span>
+                    </div>
+                    <p class="preview">{{ event.description|truncatewords:28 }}</p>
+                    <div class="card-actions">
+                        <a class="button button-ghost" href="{{ event.get_absolute_url }}">Details</a>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <h2>No published events yet</h2>
+            <p>When events are published, they will appear here.</p>
+            {% if request.user.is_authenticated %}
+                <a class="button button-primary" href="{% url 'events:event_create' %}">Create event</a>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endblock %}

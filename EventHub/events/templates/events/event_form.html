@@ -1,8 +1,40 @@
-<h1>Create event</h1>
+{% extends "base.html" %}
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
+{% block title %}
+    {% if object %}Edit {{ object.title }}{% else %}Create event{% endif %} | EventHub
+{% endblock %}
 
-    <button type="submit">Create</button>
-</form>
+{% block content %}
+    <section class="panel form-panel">
+        <p class="eyebrow">{% if object %}Organizer tools{% else %}New event{% endif %}</p>
+        <h1>{% if object %}Edit event{% else %}Create event{% endif %}</h1>
+        <p class="lead">
+            {% if object %}
+                Update the event details and publication status.
+            {% else %}
+                Add the public details for your event. You will be saved as the organizer automatically.
+            {% endif %}
+        </p>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="form-errors">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            {{ form.as_p }}
+
+            <div class="form-actions">
+                <button class="button button-primary" type="submit">
+                    {% if object %}Save changes{% else %}Create event{% endif %}
+                </button>
+                {% if object %}
+                    <a class="button button-ghost" href="{{ object.get_absolute_url }}">Cancel</a>
+                {% else %}
+                    <a class="button button-ghost" href="{% url 'events:event_list' %}">Cancel</a>
+                {% endif %}
+            </div>
+        </form>
+    </section>
+{% endblock %}

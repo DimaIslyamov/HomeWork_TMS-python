@@ -1,8 +1,30 @@
-<h1>Login</h1>
+{% extends "base.html" %}
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
+{% block title %}Login | EventHub{% endblock %}
 
-    <button type="submit">Login</button>
-</form>
+{% block content %}
+    <section class="panel form-panel">
+        <p class="eyebrow">Welcome back</p>
+        <h1>Login</h1>
+        <p class="lead">Sign in to create and manage your EventHub events.</p>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+
+            {% if form.errors %}
+                <div class="form-errors">
+                    Your username and password did not match. Please try again.
+                </div>
+            {% endif %}
+
+            {{ form.as_p }}
+
+            <input type="hidden" name="next" value="{{ next }}">
+
+            <div class="form-actions">
+                <button class="button button-primary" type="submit">Login</button>
+                <a class="button button-ghost" href="{% url 'events:event_list' %}">Back to events</a>
+            </div>
+        </form>
+    </section>
+{% endblock %}
