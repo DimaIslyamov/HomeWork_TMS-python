@@ -10,6 +10,7 @@ from django.views.generic import (
 )
 
 from .models import Event, Category
+from .forms import EventForm
 
 
 class EventListView(ListView):
@@ -50,8 +51,7 @@ class EventListView(ListView):
 
 class EventCreateView(LoginRequiredMixin, CreateView):
     model = Event
-    fields = ["title", "slug", "description",
-              "category", "is_published"]
+    form_class = EventForm
     template_name = "events/event_form.html"
 
     def form_valid(self, form):
@@ -79,8 +79,7 @@ class EventUpdateView(
     UpdateView
 ):
     model = Event
-    fields = ["title", "slug", "description",
-              "category", "is_published"]
+    form_class = EventForm
     template_name = "events/event_form.html"
 
     def test_func(self):
@@ -110,3 +109,38 @@ class EventDeleteView(
 
 def event_about(request):
     return render(request, "events/event_about.html")
+
+
+# ========= MyEventListView ====================
+
+class MyEventListView(LoginRequiredMixin, ListView):
+    model = Event
+    template_name = "events/my_event_list.html"
+    context_object_name = "events"
+
+    def get_queryset(self):
+        queryset = Event.objects.filter(
+            organizer=self.request.user
+        ).select_related(
+            "category",
+            "organizer",
+        )
+
+        status = self.request.GET.get("status")
+
+        if status == "published":
+            queryset = queryset.filter(is_published=True)
+        elif status == "draft":
+            queryset = queryset.filter(is_published=False)
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["current_status"] = (
+            self.request.GET.get(
+                "status",
+                "all"
+            )
+        )
+        return context

@@ -1,10 +1,68 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}My Events | EventHub{% endblock %}
+
+{% block content %}
+    <section class="page-header dashboard-header">
+        <div>
+            <p class="eyebrow">Organizer dashboard</p>
+            <h1>My Events</h1>
+            <p class="lead">This is your private organizer panel for managing published events and drafts.</p>
+        </div>
+        <nav>
+            <a href="{% url 'events:my_event_list' %}">
+                All
+            </a>
+            <a href="{% url 'events:my_event_list' %}?status=published">
+                Published
+            </a>
+            <a href="{% url 'events:my_event_list' %}?status=draft">
+                Draft
+            </a>
+        </nav>
+    </section>
+
+    {% if events %}
+        <div class="event-grid">
+            {% for event in events %}
+                <article class="event-card dashboard-card">
+                    <div class="card-topline">
+                        <span class="status {% if not event.is_published %}status-muted{% endif %}">
+                            {% if event.is_published %}
+                                Published
+                            {% else %}
+                                Draft
+                            {% endif %}
+                        </span>
+                    </div>
+
+                    <h2>{{ event.title }}</h2>
+
+                    <div class="meta">
+                        <span>{{ event.category.title }}</span>
+                        <span>Created: {{ event.created_at|date:"M j, Y, H:i" }}</span>
+                    </div>
+
+                    <p class="preview">{{ event.description|truncatewords:24 }}</p>
+
+                    <div class="card-actions dashboard-actions">
+                        {% if event.is_published %}
+                            <a class="button button-ghost" href="{{ event.get_absolute_url }}">Details</a>
+                        {% else %}
+                            <span class="not-public">Not public yet</span>
+                        {% endif %}
+                        <a class="button button-ghost" href="{% url 'events:event_update' event.pk %}">Edit</a>
+                        <a class="button button-danger" href="{% url 'events:event_delete' event.pk %}">Delete</a>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <p class="eyebrow">No events yet</p>
+            <h2>Your organizer dashboard is ready</h2>
+            <p>Create your first event as a draft or publish it right away.</p>
+            <a class="button button-primary" href="{% url 'events:event_create' %}">Create event</a>
+        </div>
+    {% endif %}
+{% endblock %}
