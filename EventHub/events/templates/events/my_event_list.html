@@ -19,6 +19,24 @@
             <a href="{% url 'events:my_event_list' %}?status=draft">
                 Draft
             </a>
+
+           <form method="get">
+                {% if request.GET.status %}
+                    <input
+                        type="hidden"
+                        name="status"
+                        value="{{ request.GET.status }}"
+                    >
+                {% endif %}
+                <input
+                    type="text"
+                    name="q"
+                    value="{{ query }}"
+                    placeholder="Search events..."
+                >
+                <button type="submit">Search</button>
+            </form>
+
         </nav>
     </section>
 
@@ -65,4 +83,27 @@
             <a class="button button-primary" href="{% url 'events:event_create' %}">Create event</a>
         </div>
     {% endif %}
+
+    {% if is_paginated %}
+    <div class="pagination">
+
+        {% if page_obj.has_previous %}
+            <a href="?status={{ request.GET.status }}&q={{ request.GET.q }}&page={{ page_obj.previous_page_number }}">
+                Previous
+            </a>
+        {% endif %}
+
+        <span>
+            Page {{ page_obj.number }} of {{ paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?status={{ request.GET.status }}&q={{ request.GET.q }}&page={{ page_obj.next_page_number }}">
+                Next
+            </a>
+        {% endif %}
+
+    </div>
+{% endif %}
+
 {% endblock %}

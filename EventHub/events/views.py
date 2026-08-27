@@ -1,6 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy, reverse
+from django.db.models import Q
 from django.views.generic import (
     ListView,
     DetailView,
@@ -15,7 +16,9 @@ from .forms import EventForm
 
 class EventListView(ListView):
     model = Event
+    template_name = "events/event_list.html"
     context_object_name = "events"
+    paginate_by = 5
 
     def get_queryset(self):
         queryset = Event.objects.filter(
@@ -26,9 +29,15 @@ class EventListView(ListView):
         )
 
         category_id = self.kwargs.get("category_id")
-
         if category_id:
             queryset = queryset.filter(category_id=category_id)
+
+        query = self.request.GET.get("q")
+        if query:
+            queryset = queryset.filter(
+                Q(title__icontains=query) |
+                Q(description__icontains=query)
+            )
 
         return queryset
 
@@ -39,6 +48,7 @@ class EventListView(ListView):
         context["page_title"] = "All Events"
         context["events_count"] = context["events"].count()
         context["categories"] = Category.objects.all()
+        context["query"] = self.request.GET.get("q")
 
         if category_id:
             context["category"] = get_object_or_404(
@@ -117,6 +127,7 @@ class MyEventListView(LoginRequiredMixin, ListView):
     model = Event
     template_name = "events/my_event_list.html"
     context_object_name = "events"
+    paginate_by = 5
 
     def get_queryset(self):
         queryset = Event.objects.filter(
@@ -127,20 +138,30 @@ class MyEventListView(LoginRequiredMixin, ListView):
         )
 
         status = self.request.GET.get("status")
+        query = self.request.GET.get("q")
 
         if status == "published":
             queryset = queryset.filter(is_published=True)
         elif status == "draft":
             queryset = queryset.filter(is_published=False)
 
+        if query:
+            queryset = queryset.filter(
+                Q(title__icontains=query) |
+                Q(description__icontains=query)
+            )
+
         return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        context["query"] = self.request.GET.get("q", "")
         context["current_status"] = (
             self.request.GET.get(
                 "status",
                 "all"
             )
         )
+
         return context

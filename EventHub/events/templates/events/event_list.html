@@ -27,6 +27,16 @@
         </div>
     {% endif %}
 
+    <form method="get">
+        <input
+            type="text"
+            name="q"
+            value="{{ query }}"
+            placeholder="Search events..."
+        >
+        <button type="submit">Search</button>
+    </form>
+
     {% if events %}
         <div class="event-grid">
             {% for event in events %}
@@ -54,4 +64,25 @@
             {% endif %}
         </div>
     {% endif %}
+
+    {% if is_paginated %}
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?q={{ request.GET.q }}&page={{ page_obj.previous_page_number }}">
+                    Previous
+                </a>
+            {% endif %}
+
+            <span>
+                Page {{ page_obj.number }} of {{ paginator.num_pages }}
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?q={{ request.GET.q }}&page={{ page_obj.next_page_number }}">
+                    Next
+                </a>
+            {% endif %}
+        </div>
+    {% endif %}
+
 {% endblock %}
