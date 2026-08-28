@@ -20,9 +20,9 @@ urlpatterns = [
         name="my_event_list",
     ),
     path(
-        "about/",
-        views.event_about,
-        name="event_about",
+        "my-registrations/",
+        views.MyRegistrationListView.as_view(),
+        name="my_registration_list",
     ),
 
     path(
@@ -36,6 +36,16 @@ urlpatterns = [
         name="event_delete",
     ),
     path(
+        "<int:pk>/join/",
+        views.join_event,
+        name="event_join",
+    ),
+    path(
+        "<int:pk>/leave/",
+        views.leave_event,
+        name="event_leave",
+    ),
+    path(
         "category/<int:category_id>/",
         views.EventListView.as_view(),
         name="events_by_category",
@@ -47,4 +57,3 @@ urlpatterns = [
         name="event_detail",
     ),
 ]
-

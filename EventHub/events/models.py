@@ -29,6 +29,12 @@ class Event(models.Model):
         related_name='organized_events',
     )
 
+    participants = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name="participated_events",
+        blank=True,
+    )
+
     class Meta:
         ordering = ['-created_at']
 

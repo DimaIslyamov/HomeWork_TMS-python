@@ -1,7 +1,9 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.db.models import Q
+from django.views.decorators.http import require_POST
 from django.views.generic import (
     ListView,
     DetailView,
@@ -12,6 +14,49 @@ from django.views.generic import (
 
 from .models import Event, Category
 from .forms import EventForm
+
+
+def build_query_string(request, **updates):
+    query_params = request.GET.copy()
+    query_params.pop("page", None)
+
+    for key, value in updates.items():
+        query_params.pop(key, None)
+        if value:
+            query_params[key] = value
+
+    return query_params.urlencode()
+
+
+@login_required
+@require_POST
+def join_event(request, pk):
+    event = get_object_or_404(
+        Event,
+        pk=pk,
+        is_published=True,
+    )
+
+    if request.user == event.organizer:
+        return redirect(event.get_absolute_url())
+    
+    event.participants.add(request.user)
+
+    return redirect(event.get_absolute_url())
+
+
+@login_required
+@require_POST
+def leave_event(request, pk):
+    event = get_object_or_404(
+        Event,
+        pk=pk,
+        is_published=True,
+    )
+
+    event.participants.remove(request.user)
+
+    return redirect(event.get_absolute_url())
 
 
 class EventListView(ListView):
@@ -46,9 +91,10 @@ class EventListView(ListView):
         category_id = self.kwargs.get("category_id")
 
         context["page_title"] = "All Events"
-        context["events_count"] = context["events"].count()
+        context["events_count"] = context["paginator"].count
         context["categories"] = Category.objects.all()
-        context["query"] = self.request.GET.get("q")
+        context["query"] = self.request.GET.get("q", "")
+        context["pagination_query"] = build_query_string(self.request)
 
         if category_id:
             context["category"] = get_object_or_404(
@@ -81,6 +127,18 @@ class EventDetailView(DetailView):
 
     def get_queryset(self):
         return Event.objects.filter(is_published=True)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["is_participant"] = False
+
+        if self.request.user.is_authenticated:
+            context["is_participant"] = self.object.participants.filter(
+                pk=self.request.user.pk
+            ).exists()
+
+        return context
 
 
 class EventUpdateView(
@@ -115,10 +173,6 @@ class EventDeleteView(
     def test_func(self):
         event = self.get_object()
         return event.organizer == self.request.user
-
-
-def event_about(request):
-    return render(request, "events/event_about.html")
 
 
 # ========= MyEventListView ====================
@@ -157,11 +211,37 @@ class MyEventListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
 
         context["query"] = self.request.GET.get("q", "")
-        context["current_status"] = (
-            self.request.GET.get(
-                "status",
-                "all"
-            )
+        current_status = self.request.GET.get("status", "all")
+        if current_status not in ("published", "draft"):
+            current_status = "all"
+
+        context["current_status"] = current_status
+        context["pagination_query"] = build_query_string(self.request)
+        context["all_query"] = build_query_string(
+            self.request,
+            status="",
+        )
+        context["published_query"] = build_query_string(
+            self.request,
+            status="published",
+        )
+        context["draft_query"] = build_query_string(
+            self.request,
+            status="draft",
         )
 
         return context
+
+
+class MyRegistrationListView(LoginRequiredMixin, ListView):
+    model = Event
+    template_name = "events/my_registration_list.html"
+    context_object_name = "events"
+
+    def get_queryset(self):
+        return self.request.user.participated_events.filter(
+            is_published=True
+        ).select_related(
+            "category",
+            "organizer",
+        )

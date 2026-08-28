@@ -9,23 +9,25 @@
             <h1>My Events</h1>
             <p class="lead">This is your private organizer panel for managing published events and drafts.</p>
         </div>
-        <nav>
-            <a href="{% url 'events:my_event_list' %}">
-                All
-            </a>
-            <a href="{% url 'events:my_event_list' %}?status=published">
-                Published
-            </a>
-            <a href="{% url 'events:my_event_list' %}?status=draft">
-                Draft
-            </a>
+        <nav class="dashboard-tools" aria-label="My events filters">
+            <div class="filter-bar dashboard-filter-bar">
+                <a class="filter-pill {% if current_status == 'all' %}active{% endif %}" href="{% url 'events:my_event_list' %}{% if all_query %}?{{ all_query }}{% endif %}">
+                    All
+                </a>
+                <a class="filter-pill {% if current_status == 'published' %}active{% endif %}" href="{% url 'events:my_event_list' %}{% if published_query %}?{{ published_query }}{% endif %}">
+                    Published
+                </a>
+                <a class="filter-pill {% if current_status == 'draft' %}active{% endif %}" href="{% url 'events:my_event_list' %}{% if draft_query %}?{{ draft_query }}{% endif %}">
+                    Draft
+                </a>
+            </div>
 
-           <form method="get">
-                {% if request.GET.status %}
+            <form class="search-form dashboard-search" method="get">
+                {% if current_status != "all" %}
                     <input
                         type="hidden"
                         name="status"
-                        value="{{ request.GET.status }}"
+                        value="{{ current_status }}"
                     >
                 {% endif %}
                 <input
@@ -34,9 +36,8 @@
                     value="{{ query }}"
                     placeholder="Search events..."
                 >
-                <button type="submit">Search</button>
+                <button class="button button-primary" type="submit">Search</button>
             </form>
-
         </nav>
     </section>
 
@@ -85,25 +86,25 @@
     {% endif %}
 
     {% if is_paginated %}
-    <div class="pagination">
+        <div class="pagination">
 
-        {% if page_obj.has_previous %}
-            <a href="?status={{ request.GET.status }}&q={{ request.GET.q }}&page={{ page_obj.previous_page_number }}">
-                Previous
-            </a>
-        {% endif %}
+            {% if page_obj.has_previous %}
+                <a class="button button-ghost" href="?{% if pagination_query %}{{ pagination_query }}&{% endif %}page={{ page_obj.previous_page_number }}">
+                    Previous
+                </a>
+            {% endif %}
 
-        <span>
-            Page {{ page_obj.number }} of {{ paginator.num_pages }}
-        </span>
+            <span class="page-count">
+                Page {{ page_obj.number }} of {{ paginator.num_pages }}
+            </span>
 
-        {% if page_obj.has_next %}
-            <a href="?status={{ request.GET.status }}&q={{ request.GET.q }}&page={{ page_obj.next_page_number }}">
-                Next
-            </a>
-        {% endif %}
+            {% if page_obj.has_next %}
+                <a class="button button-ghost" href="?{% if pagination_query %}{{ pagination_query }}&{% endif %}page={{ page_obj.next_page_number }}">
+                    Next
+                </a>
+            {% endif %}
 
-    </div>
-{% endif %}
+        </div>
+    {% endif %}
 
 {% endblock %}

@@ -27,14 +27,14 @@
         </div>
     {% endif %}
 
-    <form method="get">
+    <form class="search-form" method="get">
         <input
             type="text"
             name="q"
             value="{{ query }}"
             placeholder="Search events..."
         >
-        <button type="submit">Search</button>
+        <button class="button button-primary" type="submit">Search</button>
     </form>
 
     {% if events %}
@@ -68,17 +68,17 @@
     {% if is_paginated %}
         <div class="pagination">
             {% if page_obj.has_previous %}
-                <a href="?q={{ request.GET.q }}&page={{ page_obj.previous_page_number }}">
+                <a class="button button-ghost" href="?{% if pagination_query %}{{ pagination_query }}&{% endif %}page={{ page_obj.previous_page_number }}">
                     Previous
                 </a>
             {% endif %}
 
-            <span>
+            <span class="page-count">
                 Page {{ page_obj.number }} of {{ paginator.num_pages }}
             </span>
 
             {% if page_obj.has_next %}
-                <a href="?q={{ request.GET.q }}&page={{ page_obj.next_page_number }}">
+                <a class="button button-ghost" href="?{% if pagination_query %}{{ pagination_query }}&{% endif %}page={{ page_obj.next_page_number }}">
                     Next
                 </a>
             {% endif %}

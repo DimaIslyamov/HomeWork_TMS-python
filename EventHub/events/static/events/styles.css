@@ -139,6 +139,25 @@ button {
     padding: 44px 0 72px;
 }
 
+.site-footer {
+    border-top: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--muted);
+}
+
+.footer-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 22px 0;
+    font-size: 0.95rem;
+}
+
+.footer-inner strong {
+    color: var(--text);
+}
+
 .page-header {
     margin-bottom: 28px;
 }
@@ -203,6 +222,47 @@ h1 {
     background: var(--surface-muted);
     color: var(--accent-dark);
     text-decoration: none;
+}
+
+.dashboard-tools {
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.dashboard-filter-bar {
+    margin: 0;
+    justify-content: flex-end;
+}
+
+.search-form {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0 0 30px;
+}
+
+.dashboard-search {
+    justify-content: flex-end;
+    margin: 0;
+}
+
+.search-form input[type="text"] {
+    width: min(360px, 100%);
+    min-height: 40px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--surface);
+    padding: 9px 12px;
+    color: var(--text);
+    font: inherit;
+}
+
+.search-form input[type="text"]:focus {
+    border-color: var(--accent);
+    outline: 3px solid rgba(22, 108, 91, 0.12);
 }
 
 .event-grid {
@@ -284,6 +344,23 @@ h1 {
     text-align: center;
 }
 
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 34px;
+    border-top: 1px solid var(--line);
+    padding-top: 24px;
+}
+
+.page-count {
+    color: var(--muted);
+    font-size: 0.94rem;
+    font-weight: 700;
+}
+
 .detail-layout {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 280px;
@@ -316,9 +393,20 @@ h1 {
 
 .detail-actions {
     display: flex;
+    align-items: center;
     flex-wrap: wrap;
     gap: 10px;
     margin-top: 22px;
+}
+
+.inline-action-form {
+    margin: 0;
+}
+
+.participant-count {
+    color: var(--text);
+    font-size: 1.35rem;
+    font-weight: 800;
 }
 
 .form-panel {
@@ -396,6 +484,11 @@ h1 {
         justify-content: flex-start;
     }
 
+    .footer-inner {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
     .detail-layout {
         grid-template-columns: 1fr;
     }
@@ -403,5 +496,21 @@ h1 {
     .dashboard-header {
         align-items: flex-start;
         flex-direction: column;
+    }
+
+    .dashboard-tools {
+        align-items: flex-start;
+        width: 100%;
+    }
+
+    .dashboard-filter-bar,
+    .dashboard-search {
+        justify-content: flex-start;
+    }
+
+    .search-form,
+    .search-form input[type="text"],
+    .search-form .button {
+        width: 100%;
     }
 }

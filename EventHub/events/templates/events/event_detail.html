@@ -4,7 +4,9 @@
 
 {% block content %}
     <div class="detail-layout">
+
         <article class="panel">
+
             <p class="eyebrow">Event details</p>
             <h1>{{ event.title }}</h1>
             <p class="detail-body">{{ event.description }}</p>
@@ -15,6 +17,23 @@
                     <a class="button button-danger" href="{% url 'events:event_delete' event.pk %}">Delete</a>
                 </div>
             {% endif %}
+
+            {% if user.is_authenticated and user != event.organizer %}
+                <div class="detail-actions">
+                    {% if is_participant %}
+                        <form class="inline-action-form" method="post" action="{% url 'events:event_leave' event.pk %}">
+                            {% csrf_token %}
+                            <button class="button button-danger" type="submit">Leave Event</button>
+                        </form>
+                    {% else %}
+                        <form class="inline-action-form" method="post" action="{% url 'events:event_join' event.pk %}">
+                            {% csrf_token %}
+                            <button class="button button-primary" type="submit">Join Event</button>
+                        </form>
+                    {% endif %}
+                </div>
+            {% endif %}
+
         </article>
 
         <aside class="panel">
@@ -26,6 +45,10 @@
                 {% else %}
                     <span class="status">Draft</span>
                 {% endif %}
+            </p>
+            <p>
+                <strong>Participants</strong><br>
+                <span class="participant-count">{{ event.participants.count }}</span>
             </p>
             <p><strong>Created</strong><br>{{ event.created_at|date:"M j, Y, H:i" }}</p>
             <a href="{% url 'events:event_list' %}">Back to events</a>

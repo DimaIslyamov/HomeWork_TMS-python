@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}My Registrations | EventHub{% endblock %}
+
+{% block content %}
+    <section class="page-header">
+        <p class="eyebrow">Participant dashboard</p>
+        <h1>My Registrations</h1>
+        <p class="lead">Published events you have joined are collected here.</p>
+    </section>
+
+    {% if events %}
+        <div class="event-grid">
+            {% for event in events %}
+                <article class="event-card">
+                    <h2>
+                        <a href="{{ event.get_absolute_url }}">{{ event.title }}</a>
+                    </h2>
+                    <div class="meta">
+                        <span>{{ event.category.title }}</span>
+                        <span>Organizer: {{ event.organizer }}</span>
+                        <span>Created: {{ event.created_at|date:"M j, Y, H:i" }}</span>
+                    </div>
+                    <p class="preview">{{ event.description|truncatewords:28 }}</p>
+                    <div class="card-actions">
+                        <a class="button button-ghost" href="{{ event.get_absolute_url }}">Details</a>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <p class="eyebrow">No registrations yet</p>
+            <h2>You have not joined any events</h2>
+            <p>Browse the public catalog and register for a published event.</p>
+            <a class="button button-primary" href="{% url 'events:event_list' %}">Browse events</a>
+        </div>
+    {% endif %}
+
+{% endblock %}
