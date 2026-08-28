@@ -1,8 +1,9 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy, reverse
 from django.db.models import Q
+from django.views import View
 from django.views.decorators.http import require_POST
 from django.views.generic import (
     ListView,
@@ -13,7 +14,7 @@ from django.views.generic import (
 )
 
 from .models import Event, Category
-from .forms import EventForm
+from .forms import EventForm, SessionFormSet
 
 
 def build_query_string(request, **updates):
@@ -245,3 +246,53 @@ class MyRegistrationListView(LoginRequiredMixin, ListView):
             "category",
             "organizer",
         )
+
+
+# =============== Sessions ======================
+
+class EventSessionManageView(LoginRequiredMixin, View):
+    template_name = "events/session_manage.html"
+    
+    def get(self, request, pk):
+        event = get_object_or_404(
+            Event,
+            pk=pk,
+            organizer=request.user,
+        )
+        
+        formset = SessionFormSet(instance=event)
+        
+        return render(
+            request,
+            self.template_name,
+            {
+                "event": event,
+                "formset": formset,
+            },
+        )
+
+    def post(self, request, pk):
+        event = get_object_or_404(
+            Event,
+            pk=pk,
+            organizer=request.user,
+        )
+
+        formset = SessionFormSet(
+            request.POST,
+            instance=event,
+        )
+
+        if formset.is_valid():
+            formset.save()
+            return redirect("events:my_event_list")
+
+        return render(
+            request,
+            self.template_name,
+            {
+                "event": event,
+                "formset": formset,
+            },
+        )
+        

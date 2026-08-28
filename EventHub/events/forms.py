@@ -1,6 +1,7 @@
 from django import forms
+from django.forms import inlineformset_factory
 
-from .models import Event
+from .models import Event, Session
 
 
 class EventForm(forms.ModelForm):
@@ -33,3 +34,16 @@ class EventForm(forms.ModelForm):
             )
 
         return slug
+
+
+SessionFormSet = inlineformset_factory(
+    Event,
+    Session,
+    fields=[
+        "title",
+        "description",
+        "start_time",
+    ],
+    extra=1,
+    can_delete=True,
+)

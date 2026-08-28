@@ -43,3 +43,18 @@ class Event(models.Model):
 
     def get_absolute_url(self):
         return reverse("events:event_detail", kwargs={"slug": self.slug})
+
+
+class Session(models.Model):
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    start_time = models.DateTimeField()
+
+    event = models.ForeignKey(
+        Event,
+        on_delete=models.CASCADE,
+        related_name='sessions',
+    )
+
+    def __str__(self):
+        return self.title

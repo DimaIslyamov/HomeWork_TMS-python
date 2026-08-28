@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Sessions | EventHub{% endblock %}
+
+{% block content %}
+    <section class="page-header">
+        <p class="eyebrow">Organizer dashboard</p>
+        <h1>Manage Sessions</h1>
+        <p class="lead">Edit the schedule for {{ event.title }}.</p>
+    </section>
+
+    <form class="session-formset" method="post">
+        {% csrf_token %}
+
+        {{ formset.management_form }}
+
+        {% if formset.non_form_errors %}
+            <div class="form-errors">
+                {{ formset.non_form_errors }}
+            </div>
+        {% endif %}
+
+        <div class="session-list">
+            {% for form in formset %}
+                <section class="panel session-card">
+                    {% for hidden in form.hidden_fields %}
+                        {{ hidden }}
+                    {% endfor %}
+
+                    <div class="session-card-header">
+                        <div>
+                            <p class="eyebrow">Session {{ forloop.counter }}</p>
+                            <h2>
+                                {% if form.instance.pk %}
+                                    {{ form.instance.title|default:"Existing session" }}
+                                {% else %}
+                                    New session
+                                {% endif %}
+                            </h2>
+                        </div>
+
+                        {% if form.DELETE %}
+                            <label class="delete-option">
+                                {{ form.DELETE }}
+                                <span>Delete this session</span>
+                            </label>
+                        {% endif %}
+                    </div>
+
+                    {% if form.non_field_errors %}
+                        <div class="form-errors">
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+
+                    <div class="form-grid">
+                        <div class="form-field">
+                            {{ form.title.label_tag }}
+                            {{ form.title }}
+                            {{ form.title.errors }}
+                        </div>
+
+                        <div class="form-field">
+                            {{ form.start_time.label_tag }}
+                            {{ form.start_time }}
+                            {{ form.start_time.errors }}
+                        </div>
+
+                        <div class="form-field form-field-full">
+                            {{ form.description.label_tag }}
+                            {{ form.description }}
+                            {{ form.description.errors }}
+                        </div>
+                    </div>
+                </section>
+            {% endfor %}
+        </div>
+
+        <div class="form-actions">
+            <button class="button button-primary" type="submit">Save sessions</button>
+            <a class="button button-ghost" href="{% url 'events:my_event_list' %}">Back to My Events</a>
+        </div>
+    </form>
+
+{% endblock %}

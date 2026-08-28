@@ -46,6 +46,11 @@ urlpatterns = [
         name="event_leave",
     ),
     path(
+        "<int:pk>/sessions/",
+        views.EventSessionManageView.as_view(),
+        name="event_sessions",
+    ),
+    path(
         "category/<int:category_id>/",
         views.EventListView.as_view(),
         name="events_by_category",
