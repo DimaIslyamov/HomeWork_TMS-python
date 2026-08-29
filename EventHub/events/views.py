@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import get_object_or_404, redirect, render
@@ -14,6 +15,11 @@ from django.views.generic import (
 )
 
 from .models import Event, Category
+from .services import (
+    EventRegistrationError,
+    register_for_event,
+    cancel_registration
+)
 from .forms import EventForm, SessionFormSet
 
 
@@ -38,10 +44,10 @@ def join_event(request, pk):
         is_published=True,
     )
 
-    if request.user == event.organizer:
-        return redirect(event.get_absolute_url())
-    
-    event.participants.add(request.user)
+    try:
+        register_for_event(event, request.user)
+    except EventRegistrationError as exc:
+        messages.error(request, str(exc))
 
     return redirect(event.get_absolute_url())
 
@@ -55,8 +61,7 @@ def leave_event(request, pk):
         is_published=True,
     )
 
-    event.participants.remove(request.user)
-
+    cancel_registration(event, request.user)
     return redirect(event.get_absolute_url())
 
 
@@ -246,7 +251,6 @@ class MyRegistrationListView(LoginRequiredMixin, ListView):
             "category",
             "organizer",
         )
-
 
 # =============== Sessions ======================
 
