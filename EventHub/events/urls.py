@@ -26,6 +26,27 @@ urlpatterns = [
     ),
 
     path(
+        "<int:event_id>/announcements/",
+        views.AnnouncementsListView.as_view(),
+        name="announcements_list",
+    ),
+    path(
+        "<int:event_id>/announcements/create/",
+        views.AnnouncementCreateView.as_view(),
+        name="announcements_create",
+    ),
+    path(
+        "announcements/<int:pk>/update/",
+        views.AnnouncementUpdateView.as_view(),
+        name="announcements_update",
+    ),
+    path(
+        "announcements/<int:pk>/delete/",
+        views.AnnouncementDeleteView.as_view(),
+        name="announcements_delete",
+    ),
+
+    path(
         "<int:pk>/update/",
         views.EventUpdateView.as_view(),
         name="event_update",

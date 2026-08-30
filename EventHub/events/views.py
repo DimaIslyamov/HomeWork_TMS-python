@@ -1,6 +1,8 @@
+from multiprocessing import context
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, PermissionRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.forms import modelform_factory
 from django.http import Http404
@@ -24,15 +26,14 @@ from .models import (
     Video,
     File,
     Image,
-    EventMaterial,
+    EventMaterial, Announcement,
 )
 from .services import (
     EventRegistrationError,
     register_for_event,
     cancel_registration
 )
-from .forms import EventForm, SessionFormSet
-
+from .forms import EventForm, SessionFormSet, AnnouncementForm
 
 CONTENT_MODELS = {
     "text": Text,
@@ -397,5 +398,100 @@ class EventSessionManageView(LoginRequiredMixin, View):
                 "event": event,
                 "formset": formset,
             },
+        )
+
+
+# ================ Announcements Views ==================
+
+class AnnouncementsListView(LoginRequiredMixin, ListView):
+    model = Announcement
+    template_name = "events/my_announcements_list.html"
+    context_object_name = "announcements"
+
+    def get_queryset(self):
+        event_id = self.kwargs["event_id"]
+
+        self.event = get_object_or_404(
+            Event,
+            pk=event_id,
+            organizer=self.request.user,
+        )
+
+        return (
+            Announcement.objects
+            .filter(event=self.event)
+            .select_related("event")
+            .order_by("-created_at")
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["page_title"] = "Announcements"
+        context["event"] = self.event
+
+        return context
+
+
+class AnnouncementCreateView(LoginRequiredMixin, CreateView):
+    model = Announcement
+    form_class = AnnouncementForm
+    template_name = "events/my_announcements_create.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        self.event = get_object_or_404(
+            Event,
+            pk=kwargs["event_id"],
+            organizer=request.user,
+        )
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        form.instance.event = self.event
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse(
+            "events:announcements_list",
+            kwargs={"event_id": self.event.pk},
+        )
+
+
+class AnnouncementUpdateView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    UpdateView,
+    ):
+    model = Announcement
+    form_class = AnnouncementForm
+    template_name = "events/my_announcements_update.html"
+
+    def test_func(self):
+        announcement = self.get_object()
+        return announcement.event.organizer == self.request.user
+
+    def get_success_url(self):
+        return reverse(
+            "events:announcements_list",
+            kwargs={"event_id": self.object.event_id},
+        )
+
+
+class AnnouncementDeleteView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    DeleteView,
+):
+    model = Announcement
+    template_name = "events/my_announcements_delete.html"
+
+    def test_func(self):
+        announcement = self.get_object()
+        return announcement.event.organizer == self.request.user
+
+    def get_success_url(self):
+        return reverse(
+            "events:announcements_list",
+            kwargs={"event_id": self.object.event_id},
         )
         

@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import inlineformset_factory
 
-from .models import Event, Session
+from .models import Event, Session, Announcement
 
 
 class EventForm(forms.ModelForm):
@@ -34,6 +34,15 @@ class EventForm(forms.ModelForm):
             )
 
         return slug
+
+
+class AnnouncementForm(forms.ModelForm):
+    class Meta:
+        model = Announcement
+        fields = [
+            "title",
+            "description",
+        ]
 
 
 SessionFormSet = inlineformset_factory(

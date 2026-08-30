@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Announcement | EventHub{% endblock %}
+
+{% block content %}
+    <section class="panel form-panel">
+        <p class="eyebrow">Organizer dashboard</p>
+        <h1>Edit announcement</h1>
+        <p class="lead">Update this announcement for {{ object.event.title }}.</p>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="form-errors">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            {{ form.as_p }}
+
+            <div class="form-actions">
+                <button class="button button-primary" type="submit">Save</button>
+                <a class="button button-ghost" href="{% url 'events:announcements_list' event_id=object.event_id %}">Cancel</a>
+            </div>
+        </form>
+    </section>
+{% endblock %}

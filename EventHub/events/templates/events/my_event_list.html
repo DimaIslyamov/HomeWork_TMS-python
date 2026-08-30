@@ -79,6 +79,7 @@
                             <span class="not-public">Not public yet</span>
                         {% endif %}
                         <a class="button button-ghost" href="{% url 'events:event_sessions' event.pk %}">Manage Sessions</a>
+                        <a class="button button-ghost" href="{% url 'events:announcements_list' event_id=event.pk %}">Announcements</a>
                         <a class="button button-ghost" href="{% url 'events:event_update' event.pk %}">Edit</a>
                         <a class="button button-danger" href="{% url 'events:event_delete' event.pk %}">Delete</a>
                     </div>

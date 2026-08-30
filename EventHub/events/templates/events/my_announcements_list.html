@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Announcements for {{ event.title }} | EventHub{% endblock %}
+
+{% block content %}
+    <section class="page-header dashboard-header">
+        <div>
+            <p class="eyebrow">Organizer dashboard</p>
+            <h1>Announcements for {{ event.title }}</h1>
+            <p class="lead">Share updates and important notes for this event.</p>
+        </div>
+        <a class="button button-primary" href="{% url 'events:announcements_create' event_id=event.pk %}">
+            Create announcement
+        </a>
+    </section>
+
+    {% if announcements %}
+        <div class="event-grid">
+            {% for announcement in announcements %}
+                <article class="event-card announcement-card">
+                    <div class="card-topline">
+                        <span class="meta">Created: {{ announcement.created_at|date:"M j, Y, H:i" }}</span>
+                    </div>
+
+                    <h2>{{ announcement.title }}</h2>
+                    <p class="preview">{{ announcement.description }}</p>
+
+                    <div class="card-actions dashboard-actions">
+                        <a class="button button-ghost" href="{% url 'events:announcements_update' announcement.pk %}">Edit</a>
+                        <a class="button button-danger" href="{% url 'events:announcements_delete' announcement.pk %}">Delete</a>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <p class="eyebrow">No announcements yet</p>
+            <h2>No updates have been posted</h2>
+            <p>Create the first announcement when you have something to share.</p>
+            <a class="button button-primary" href="{% url 'events:announcements_create' event_id=event.pk %}">
+                Create announcement
+            </a>
+        </div>
+    {% endif %}
+
+    <div class="form-actions">
+        <a class="button button-ghost" href="{% url 'events:my_event_list' %}">Back to My Events</a>
+        {% if event.is_published %}
+            <a class="button button-ghost" href="{{ event.get_absolute_url }}">Back to event</a>
+        {% endif %}
+    </div>
+{% endblock %}

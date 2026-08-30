@@ -65,6 +65,21 @@ class Session(models.Model):
         return self.title
 
 
+class Announcement(models.Model):
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    event = models.ForeignKey(
+        Event,
+        on_delete=models.CASCADE,
+        related_name='announcements',
+    )
+
+    def __str__(self):
+        return self.title
+
+
 class Text(models.Model):
     body = models.TextField()
 

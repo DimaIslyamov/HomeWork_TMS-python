@@ -290,6 +290,27 @@ h1 {
     min-height: 310px;
 }
 
+.announcement-card {
+    min-height: 230px;
+}
+
+.announcement-summary {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--surface-muted);
+    margin: 22px 0;
+    padding: 18px;
+}
+
+.announcement-summary h2 {
+    margin-bottom: 8px;
+    font-size: 1.25rem;
+}
+
+.announcement-summary p {
+    color: var(--muted);
+}
+
 .card-topline {
     display: flex;
     justify-content: flex-end;
