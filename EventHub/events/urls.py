@@ -55,6 +55,11 @@ urlpatterns = [
         views.EventListView.as_view(),
         name="events_by_category",
     ),
+    path(
+        "<int:pk>/materials/add/<str:content_type>/",
+        views.EventMaterialCreateView.as_view(),
+        name="event_material_add",
+    ),
 
     path(
         "<slug:slug>/",

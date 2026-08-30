@@ -1,5 +1,10 @@
 from django.db import models
 from django.conf import settings
+from django.contrib.contenttypes.fields import (
+    GenericForeignKey,
+    GenericRelation,
+)
+from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
 
 
@@ -58,3 +63,45 @@ class Session(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Text(models.Model):
+    body = models.TextField()
+
+    materials = GenericRelation(
+        "EventMaterial",
+        content_type_field="content_type",
+        object_id_field="object_id",
+    )
+
+
+class File(models.Model):
+    file = models.FileField(upload_to="event_files/")
+
+
+class Image(models.Model):
+    image = models.ImageField(upload_to="event_images/")
+
+
+class Video(models.Model):
+    url = models.URLField()
+
+
+class EventMaterial(models.Model):
+    event = models.ForeignKey(
+        Event,
+        on_delete=models.CASCADE,
+        related_name="materials",
+    )
+
+    content_type = models.ForeignKey(
+        ContentType,
+        on_delete=models.CASCADE,
+    )
+
+    object_id = models.PositiveIntegerField()
+
+    content = GenericForeignKey(
+        "content_type",
+        "object_id",
+    )

@@ -327,6 +327,28 @@ h1 {
     gap: 10px;
 }
 
+.material-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+    border-top: 1px solid var(--line);
+    padding-top: 14px;
+}
+
+.material-actions-label {
+    color: var(--muted);
+    font-size: 0.88rem;
+    font-weight: 800;
+}
+
+.material-button {
+    min-height: 34px;
+    padding: 7px 10px;
+    font-size: 0.88rem;
+}
+
 .not-public {
     display: inline-flex;
     align-items: center;
@@ -467,11 +489,15 @@ h1 {
 }
 
 .form-field input[type="text"],
+.form-field input[type="url"],
+.form-field input[type="file"],
 .form-field input[type="datetime-local"],
 .form-field textarea,
 .form-panel input[type="text"],
 .form-panel input[type="password"],
 .form-panel input[type="email"],
+.form-panel input[type="url"],
+.form-panel input[type="file"],
 .form-panel textarea,
 .form-panel select {
     width: 100%;
@@ -481,6 +507,10 @@ h1 {
     padding: 11px 12px;
     color: var(--text);
     font: inherit;
+}
+
+.material-form-grid {
+    grid-template-columns: 1fr;
 }
 
 .form-panel textarea {

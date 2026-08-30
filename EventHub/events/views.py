@@ -1,6 +1,9 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.contenttypes.models import ContentType
+from django.forms import modelform_factory
+from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy, reverse
 from django.db.models import Q
@@ -14,13 +17,29 @@ from django.views.generic import (
     DeleteView,
 )
 
-from .models import Event, Category
+from .models import (
+    Event,
+    Category,
+    Text,
+    Video,
+    File,
+    Image,
+    EventMaterial,
+)
 from .services import (
     EventRegistrationError,
     register_for_event,
     cancel_registration
 )
 from .forms import EventForm, SessionFormSet
+
+
+CONTENT_MODELS = {
+    "text": Text,
+    "video": Video,
+    "file": File,
+    "image": Image,
+}
 
 
 def build_query_string(request, **updates):
@@ -179,6 +198,86 @@ class EventDeleteView(
     def test_func(self):
         event = self.get_object()
         return event.organizer == self.request.user
+
+
+class EventMaterialCreateView(LoginRequiredMixin, View):
+    template_name = "events/material_form.html"
+
+    def get(self, request, pk, content_type):
+        event = get_object_or_404(
+            Event,
+            pk=pk,
+            organizer=request.user,
+        )
+
+        model = CONTENT_MODELS.get(content_type)
+
+        if model is None:
+            raise Http404("Unknown content type")
+
+        ContentForm = modelform_factory(
+            model,
+            fields="__all__",
+        )
+
+        form = ContentForm()
+
+        return render(
+            request,
+            self.template_name,
+            {
+                "event": event,
+                "form": form,
+                "content_type": content_type,
+            },
+        )
+
+    def post(self, request, pk, content_type):
+        event = get_object_or_404(
+            Event,
+            pk=pk,
+            organizer=request.user,
+        )
+
+        model = CONTENT_MODELS.get(content_type)
+
+        if model is None:
+            raise Http404("Unknown content type")
+
+        ContentForm = modelform_factory(
+            model,
+            fields="__all__",
+        )
+
+        form = ContentForm(
+            request.POST,
+            request.FILES,
+        )
+
+        if form.is_valid():
+            content_object = form.save()
+
+            django_content_type = ContentType.objects.get_for_model(
+                content_object
+            )
+
+            EventMaterial.objects.create(
+                event=event,
+                content_type=django_content_type,
+                object_id=content_object.pk,
+            )
+
+            return redirect("events:my_event_list")
+
+        return render(
+            request,
+            self.template_name,
+            {
+                "event": event,
+                "form": form,
+                "content_type": content_type,
+            },
+        )
 
 
 # ========= MyEventListView ====================

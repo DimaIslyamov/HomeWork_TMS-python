@@ -64,6 +64,14 @@
 
                     <p class="preview">{{ event.description|truncatewords:24 }}</p>
 
+                    <div class="material-actions" aria-label="Add event materials">
+                        <span class="material-actions-label">Materials</span>
+                        <a class="button button-ghost material-button" href="{% url 'events:event_material_add' event.pk 'text' %}">Add text</a>
+                        <a class="button button-ghost material-button" href="{% url 'events:event_material_add' event.pk 'video' %}">Add video</a>
+                        <a class="button button-ghost material-button" href="{% url 'events:event_material_add' event.pk 'image' %}">Add image</a>
+                        <a class="button button-ghost material-button" href="{% url 'events:event_material_add' event.pk 'file' %}">Add file</a>
+                    </div>
+
                     <div class="card-actions dashboard-actions">
                         {% if event.is_published %}
                             <a class="button button-ghost" href="{{ event.get_absolute_url }}">Details</a>

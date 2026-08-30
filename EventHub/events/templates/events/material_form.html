@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Add {{ content_type|title }} Material | EventHub{% endblock %}
+
+{% block content %}
+    <section class="page-header">
+        <p class="eyebrow">Organizer dashboard</p>
+        <h1>Add {{ content_type|title }} Material</h1>
+        <p class="lead">Attach a {{ content_type }} material to {{ event.title }}.</p>
+    </section>
+
+    <section class="panel form-panel">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="form-errors">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+
+            <div class="form-grid material-form-grid">
+                {% for field in form.visible_fields %}
+                    <div class="form-field form-field-full">
+                        {{ field.label_tag }}
+                        {{ field }}
+                        {{ field.errors }}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="form-actions">
+                <button class="button button-primary" type="submit">Save</button>
+                <a class="button button-ghost" href="{% url 'events:my_event_list' %}">Cancel</a>
+            </div>
+        </form>
+    </section>
+{% endblock %}
