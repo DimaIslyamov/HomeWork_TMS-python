@@ -1,8 +1,6 @@
-from multiprocessing import context
-
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.contenttypes.models import ContentType
 from django.forms import modelform_factory
 from django.http import Http404
@@ -35,11 +33,24 @@ from .services import (
 )
 from .forms import EventForm, SessionFormSet, AnnouncementForm
 
+
 CONTENT_MODELS = {
-    "text": Text,
-    "video": Video,
-    "file": File,
-    "image": Image,
+    "text": {
+        "model": Text,
+        "fields": ["body"],
+    },
+    "video": {
+        "model": Video,
+        "fields": ["url"],
+    },
+    "file": {
+        "model": File,
+        "fields": ["file"],
+    },
+    "image": {
+        "model": Image,
+        "fields": ["image"],
+    },
 }
 
 
@@ -152,7 +163,12 @@ class EventDetailView(DetailView):
     context_object_name = "event"
 
     def get_queryset(self):
-        return Event.objects.filter(is_published=True)
+        return Event.objects.filter(
+            is_published=True
+        ).select_related(
+            "category",
+            "organizer",
+        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -211,14 +227,17 @@ class EventMaterialCreateView(LoginRequiredMixin, View):
             organizer=request.user,
         )
 
-        model = CONTENT_MODELS.get(content_type)
+        config = CONTENT_MODELS.get(content_type)
 
-        if model is None:
+        if config is None:
             raise Http404("Unknown content type")
+
+        model = config["model"]
+        fields = config["fields"]
 
         ContentForm = modelform_factory(
             model,
-            fields="__all__",
+            fields=fields,
         )
 
         form = ContentForm()
@@ -240,14 +259,17 @@ class EventMaterialCreateView(LoginRequiredMixin, View):
             organizer=request.user,
         )
 
-        model = CONTENT_MODELS.get(content_type)
+        config = CONTENT_MODELS.get(content_type)
 
-        if model is None:
+        if config is None:
             raise Http404("Unknown content type")
+
+        model = config["model"]
+        fields = config["fields"]
 
         ContentForm = modelform_factory(
             model,
-            fields="__all__",
+            fields=fields,
         )
 
         form = ContentForm(
