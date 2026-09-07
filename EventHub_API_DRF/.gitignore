@@ -1,0 +1,70 @@
+# Python
+__pycache__/
+*.py[codz]
+*$py.class
+*.so
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+.envrc
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+
+# Tests / coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.hypothesis/
+coverage.xml
+
+# Type checking / lint
+.mypy_cache/
+.ruff_cache/
+.pyre/
+.pytype/
+
+# Packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# Redis
+*.rdb
+*.aof
+*.pid
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Misc
+tempCodeRunnerFile.py
