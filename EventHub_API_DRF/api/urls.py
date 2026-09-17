@@ -1,10 +1,13 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 
-from .views import HealthAPIView, EventListAPIView, EventDetailAPIView
+from .views import HealthAPIView, EventViewSet
+
+
+router = DefaultRouter()
+router.register("events", EventViewSet, basename="events")
 
 urlpatterns = [
     path("health/", HealthAPIView.as_view(), name="health"),
-    path("events/", EventListAPIView.as_view(), name="event-list"),
-
-    path("events/<int:pk>/", EventDetailAPIView.as_view(), name="event-detail"),
+    path("", include(router.urls)),
 ]
