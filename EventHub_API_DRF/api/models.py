@@ -37,7 +37,7 @@ class Event(models.Model):
         constraints = [
             models.CheckConstraint(
                 condition=models.Q(capacity__gt=0),
-                name="event_capacity_gte_0",
+                name="event_capacity_gt_0",
             ),
         ]
 

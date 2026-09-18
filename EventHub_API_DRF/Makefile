@@ -13,7 +13,7 @@ check:
 	python manage.py check
 
 test:
-	pytest
+	python manage.py test
 
 shell:
 	python manage.py shell
