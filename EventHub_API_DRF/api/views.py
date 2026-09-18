@@ -19,4 +19,3 @@ class HealthAPIView(APIView):
 class EventViewSet(ModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
-    
