@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 from .models import Event
+from .permissions import IsOrganizer, IsEventOwner
 from .serializers import EventSerializer
 
 
@@ -19,3 +20,4 @@ class HealthAPIView(APIView):
 class EventViewSet(ModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
+    permission_classes = [IsOrganizer, IsEventOwner]
