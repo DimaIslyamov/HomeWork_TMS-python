@@ -43,3 +43,18 @@ class Event(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Session(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    starts_at = models.DateTimeField()
+
+    event = models.ForeignKey(
+        Event,
+        on_delete=models.CASCADE,
+        related_name="sessions",
+    )
+
+    def __str__(self):
+        return self.title
