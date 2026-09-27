@@ -58,3 +58,28 @@ class Session(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Registration(models.Model):
+    event = models.ForeignKey(
+        Event,
+        on_delete=models.CASCADE,
+        related_name="registrations",
+    )
+    attendee = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="registrations",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["event", "attendee"],
+                name="unique_event_attendee_registration",
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.attendee} -> {self.event}"
