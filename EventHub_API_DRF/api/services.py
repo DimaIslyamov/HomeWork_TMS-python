@@ -1,6 +1,7 @@
 from django.db import transaction
 from rest_framework.exceptions import ValidationError
 
+from .exceptions import EventFullError, AlreadyRegisteredError, NotRegisteredError
 from .models import Event, Registration
 
 
@@ -14,16 +15,12 @@ def register_for_event(*, user, event):
             attendee=user,
             event=locked_event,
         ).exists():
-            raise ValidationError(
-                {"detail": "User is already registered for this event."}
-            )
+            raise AlreadyRegisteredError()
 
         registrations_count = locked_event.registrations.count()
 
         if registrations_count >= locked_event.capacity:
-            raise ValidationError(
-                {"detail": "Event is full."}
-            )
+            raise EventFullError()
 
         registration = Registration.objects.create(
             attendee=user,
@@ -40,9 +37,6 @@ def cancel_registration(*, user, event):
     ).first()
 
     if registration is None:
-        raise ValidationError(
-            {"detail": "User is not registered for this event."}
-        )
+        raise NotRegisteredError()
 
     registration.delete()
-1
