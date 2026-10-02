@@ -49,7 +49,21 @@ class EventViewSet(ModelViewSet):
     def get_queryset(self):
         user = self.request.user
 
-        if self.action in ["list", "retrieve"]:
+        if self.action == "list":
+            if not user.is_authenticated:
+                return Event.objects.filter(
+                    is_published=True
+                ).prefetch_related("sessions")
+            if user.role == "ATTENDEE":
+                return Event.objects.filter(
+                    is_published=True
+                ).prefetch_related("sessions")
+            if user.role == "ORGANIZER":
+                return Event.objects.filter(
+                    organizer=user
+                ).prefetch_related("sessions")
+
+        if self.action == "retrieve":
             if not user.is_authenticated:
                 return Event.objects.filter(is_published=True)
             if user.role == "ATTENDEE":

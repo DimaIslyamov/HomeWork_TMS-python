@@ -11,7 +11,7 @@ class IsOrganizer(BasePermission):
 
 class IsEventOwner(BasePermission):
     def has_object_permission(self, request, view, obj) -> bool:
-        return obj.organizer == request.user
+        return obj.organizer_id == request.user.id
 
 
 class IsAttendee(BasePermission):
