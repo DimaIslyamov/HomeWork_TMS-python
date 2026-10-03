@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'django_filters',
+    'drf_spectacular',
 
     'api.apps.ApiConfig',
     'accounts.apps.AccountsConfig',
@@ -143,6 +144,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 6,
 
@@ -150,3 +152,10 @@ REST_FRAMEWORK = {
 }
 
 AUTH_USER_MODEL = "accounts.User"
+
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "EventHub API",
+    "DESCRIPTION": "API for events, sessions, registrations and authentication.",
+    "VERSION": "1.0.0",
+}

@@ -1,3 +1,12 @@
+from drf_spectacular.utils import (
+    extend_schema,
+    extend_schema_view,
+    OpenApiParameter,
+    OpenApiResponse,
+    inline_serializer,
+)
+from rest_framework import serializers
+
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -15,6 +24,16 @@ from .services import register_for_event, cancel_registration
 
 
 class HealthAPIView(APIView):
+
+    @extend_schema(
+        responses=inline_serializer(
+            name="HealthResponse",
+            fields={
+                "status": serializers.CharField(),
+                "message": serializers.CharField(),
+            },
+        )
+    )
     def get(self, request):
         return Response(
             {
@@ -25,6 +44,7 @@ class HealthAPIView(APIView):
 
 
 class SessionViewSet(ModelViewSet):
+    queryset = Session.objects.all()
     serializer_class = SessionSerializer
 
     def get_queryset(self):
@@ -33,7 +53,20 @@ class SessionViewSet(ModelViewSet):
         return Session.objects.filter(event_id=event_pk)
 
 
+@extend_schema_view(
+    list=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="ordering",
+                type=str,
+                location=OpenApiParameter.QUERY,
+                description="Order by starts_at or title. Prefix with '-' for descending order.",
+            ),
+        ]
+    )
+)
 class EventViewSet(ModelViewSet):
+    queryset = Event.objects.all()
     serializer_class = EventSerializer
     pagination_class = EventPagination
     
@@ -89,6 +122,39 @@ class EventViewSet(ModelViewSet):
 
         return [IsOrganizer(), IsEventOwner()]
 
+    @extend_schema(
+        request=None,
+        methods=["POST"],
+        responses={
+            200: OpenApiResponse(
+                response=inline_serializer(
+                    name="RegistrationCreatedResponse",
+                    fields={
+                        "message": serializers.CharField(),
+                        "registration_id": serializers.IntegerField(),
+                        "event_id": serializers.IntegerField(),
+                        "user_id": serializers.IntegerField(),
+                    },
+                ),
+                description="Registration created successfully",
+            )
+        },
+    )
+    @extend_schema(
+        request=None,
+        methods=["DELETE"],
+        responses={
+            200: OpenApiResponse(
+                response=inline_serializer(
+                    name="RegistrationCanceledResponse",
+                    fields={
+                        "message": serializers.CharField(),
+                    },
+                ),
+                description="Registration canceled successfully",
+            )
+        }
+    )
     @action(detail=True, methods=["post", "delete"])
     def register(self, request, pk=None):
         event = self.get_object()
