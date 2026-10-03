@@ -13,7 +13,10 @@ check:
 	python manage.py check
 
 test:
-	python manage.py test
+	python -m pytest
+
+test-verbose:
+	python -m pytest -v
 
 shell:
 	python manage.py shell

@@ -17,6 +17,7 @@ def custom_exception_handler(exc, context):
             "error": {
                 "code": exc.get_codes(),
                 "message": exc.detail,
+                "details": None,
             }
         }
 
@@ -34,6 +35,7 @@ def custom_exception_handler(exc, context):
             "error": {
                 "code": exc.get_codes(),
                 "message": exc.detail,
+                "details": None,
             }
         }
 
@@ -42,6 +44,7 @@ def custom_exception_handler(exc, context):
             "error": {
                 "code": "not_found",
                 "message": response.data["detail"],
+                "details": None,
             }
         }
 

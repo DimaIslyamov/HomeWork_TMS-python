@@ -17,7 +17,13 @@ class RegistrationTests(APITestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn("password", response.data)
+        self.assertEqual(set(response.data), {"error"})
+        self.assertEqual(
+            set(response.data["error"]),
+            {"code", "message", "details"},
+        )
+        self.assertEqual(response.data["error"]["code"], "validation_error")
+        self.assertIn("password", response.data["error"]["details"])
         self.assertFalse(
             get_user_model().objects.filter(username="weak_password_user").exists()
         )
