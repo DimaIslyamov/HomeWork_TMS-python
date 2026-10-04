@@ -13,8 +13,8 @@ urlpatterns = [
 
     path(
         "api/schema/",
-        SpectacularAPIView.as_view(),
-        name="schema"
+        SpectacularAPIView.as_view(api_version="1.0"),
+        name="schema",
     ),
     path(
         "api/docs/",
