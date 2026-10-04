@@ -28,12 +28,45 @@ class SessionSerializer(serializers.ModelSerializer):
         ]
 
 
+class EventStatusField(serializers.Field):
+
+    def to_representation(self, value):
+        return "published" if value else "draft"
+
+    def to_internal_value(self, data):
+        if data == "published":
+            return True
+
+        if data == "draft":
+            return False
+
+        raise serializers.ValidationError(
+            "Status must be 'published' or 'draft'."
+        )
+
+
 class EventSerializer(serializers.ModelSerializer):
     sessions = SessionSerializer(
         many=True,
         read_only=True,
     )
 
+    status = EventStatusField(
+        source="is_published",
+    )
+
     class Meta:
         model = Event
-        fields = "__all__"
+        fields = [
+            "id",
+            "title",
+            "slug",
+            "description",
+            "starts_at",
+            "capacity",
+            "is_published",
+            "status",
+            "organizer",
+            "category",
+            "sessions",
+        ]

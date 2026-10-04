@@ -17,6 +17,7 @@ from rest_framework.permissions import AllowAny
 from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import Event, Session
+from .renderers import CSVRenderer
 from .throttles import RegistrationRateThrottle
 from .permissions import IsOrganizer, IsEventOwner, IsAttendee
 from .pagination import EventPagination
@@ -149,15 +150,17 @@ class EventViewSet(ModelViewSet):
     def get_queryset(self):
         user = self.request.user
 
-        if self.action == "list":
+        if self.action in ["list", "export"]:
             if not user.is_authenticated:
                 return Event.objects.filter(
                     is_published=True
                 ).prefetch_related("sessions")
+
             if user.role == "ATTENDEE":
                 return Event.objects.filter(
                     is_published=True
                 ).prefetch_related("sessions")
+
             if user.role == "ORGANIZER":
                 return Event.objects.filter(
                     organizer=user
@@ -180,7 +183,7 @@ class EventViewSet(ModelViewSet):
         return Event.objects.none()
 
     def get_permissions(self):
-        if self.action in ["list", "retrieve"]:
+        if self.action in ["list", "retrieve", "export"]:
             return [AllowAny()]
         if self.action == "create":
             return [IsOrganizer()]
@@ -253,6 +256,21 @@ class EventViewSet(ModelViewSet):
             return Response({
                 "message": "Registration canceled"
             })
+
+    @action(
+        detail=False,
+        methods=["get"],
+        renderer_classes=[CSVRenderer],
+    )
+    def export(self, request):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        serializer = self.get_serializer(
+            queryset,
+            many=True,
+        )
+
+        return Response(serializer.data)
 
     def get_throttles(self):
         if self.action == "register":
