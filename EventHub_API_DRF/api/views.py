@@ -17,6 +17,7 @@ from rest_framework.permissions import AllowAny
 from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import Event, Session
+from .throttles import RegistrationRateThrottle
 from .permissions import IsOrganizer, IsEventOwner, IsAttendee
 from .pagination import EventPagination
 from .serializers import EventSerializer, SessionSerializer
@@ -252,3 +253,9 @@ class EventViewSet(ModelViewSet):
             return Response({
                 "message": "Registration canceled"
             })
+
+    def get_throttles(self):
+        if self.action == "register":
+            return [RegistrationRateThrottle()]
+
+        return super().get_throttles()
