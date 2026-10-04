@@ -3,6 +3,7 @@ from rest_framework.exceptions import ValidationError
 
 from .exceptions import EventFullError, AlreadyRegisteredError, NotRegisteredError
 from .models import Event, Registration
+from .tasks import registration_confirmation_task
 
 
 def register_for_event(*, user, event):
@@ -25,6 +26,10 @@ def register_for_event(*, user, event):
         registration = Registration.objects.create(
             attendee=user,
             event=locked_event,
+        )
+
+        transaction.on_commit(
+            lambda: registration_confirmation_task.delay(registration.id)
         )
 
         return registration

@@ -1,13 +1,16 @@
 openapi: 3.0.3
 info:
-  title: ''
-  version: 0.0.0
+  title: EventHub API
+  version: 1.0.0
+  description: API for events, sessions, registrations and authentication.
 paths:
   /api/auth/register/:
     post:
       operationId: auth_register_create
+      description: Create a new user account with the selected role.
+      summary: Register user
       tags:
-      - auth
+      - Authentication
       requestBody:
         content:
           application/json:
@@ -33,11 +36,11 @@ paths:
   /api/auth/token/:
     post:
       operationId: auth_token_create
-      description: |-
-        Takes a set of user credentials and returns an access and refresh JSON web
-        token pair to prove the authentication of those credentials.
+      description: Authenticate with username and password to receive JWT access and
+        refresh tokens.
+      summary: Get access token
       tags:
-      - auth
+      - Authentication
       requestBody:
         content:
           application/json:
@@ -60,11 +63,10 @@ paths:
   /api/auth/token/refresh/:
     post:
       operationId: auth_token_refresh_create
-      description: |-
-        Takes a refresh type JSON web token and returns an access type JSON web
-        token if the refresh token is valid.
+      description: Exchange a valid refresh token for a new access token.
+      summary: Refresh access token
       tags:
-      - auth
+      - Authentication
       requestBody:
         content:
           application/json:
@@ -87,6 +89,9 @@ paths:
   /api/events/:
     get:
       operationId: events_list
+      description: Return events visible to the current user. Anonymous users and
+        attendees see published events, while organizers see their own events.
+      summary: Get events
       parameters:
       - in: query
         name: category
@@ -120,7 +125,7 @@ paths:
         schema:
           type: string
       tags:
-      - events
+      - Events
       security:
       - jwtAuth: []
       - {}
@@ -133,8 +138,10 @@ paths:
           description: ''
     post:
       operationId: events_create
+      description: Create a new event. The requester must be an organizer.
+      summary: Create event
       tags:
-      - events
+      - Events
       requestBody:
         content:
           application/json:
@@ -159,6 +166,8 @@ paths:
   /api/events/{event_pk}/sessions/:
     get:
       operationId: events_sessions_list
+      description: Return sessions that belong to the selected event.
+      summary: Get event sessions
       parameters:
       - in: path
         name: event_pk
@@ -172,7 +181,7 @@ paths:
         schema:
           type: integer
       tags:
-      - events
+      - Sessions
       security:
       - jwtAuth: []
       - {}
@@ -185,6 +194,8 @@ paths:
           description: ''
     post:
       operationId: events_sessions_create
+      description: Create a new session for the selected event.
+      summary: Create event session
       parameters:
       - in: path
         name: event_pk
@@ -192,7 +203,7 @@ paths:
           type: integer
         required: true
       tags:
-      - events
+      - Sessions
       requestBody:
         content:
           application/json:
@@ -218,6 +229,8 @@ paths:
   /api/events/{event_pk}/sessions/{id}/:
     get:
       operationId: events_sessions_retrieve
+      description: Return details for one session from the selected event.
+      summary: Get event session
       parameters:
       - in: path
         name: event_pk
@@ -231,7 +244,7 @@ paths:
         description: A unique integer value identifying this session.
         required: true
       tags:
-      - events
+      - Sessions
       security:
       - jwtAuth: []
       - {}
@@ -244,6 +257,8 @@ paths:
           description: ''
     put:
       operationId: events_sessions_update
+      description: Replace all editable fields for one session from the selected event.
+      summary: Update event session
       parameters:
       - in: path
         name: event_pk
@@ -257,7 +272,7 @@ paths:
         description: A unique integer value identifying this session.
         required: true
       tags:
-      - events
+      - Sessions
       requestBody:
         content:
           application/json:
@@ -282,6 +297,8 @@ paths:
           description: ''
     patch:
       operationId: events_sessions_partial_update
+      description: Update selected fields for one session from the selected event.
+      summary: Partially update event session
       parameters:
       - in: path
         name: event_pk
@@ -295,7 +312,7 @@ paths:
         description: A unique integer value identifying this session.
         required: true
       tags:
-      - events
+      - Sessions
       requestBody:
         content:
           application/json:
@@ -319,6 +336,8 @@ paths:
           description: ''
     delete:
       operationId: events_sessions_destroy
+      description: Delete one session from the selected event.
+      summary: Delete event session
       parameters:
       - in: path
         name: event_pk
@@ -332,7 +351,7 @@ paths:
         description: A unique integer value identifying this session.
         required: true
       tags:
-      - events
+      - Sessions
       security:
       - jwtAuth: []
       - {}
@@ -342,6 +361,8 @@ paths:
   /api/events/{id}/:
     get:
       operationId: events_retrieve
+      description: Return details for one event visible to the current user.
+      summary: Get event
       parameters:
       - in: path
         name: id
@@ -350,7 +371,7 @@ paths:
         description: A unique integer value identifying this event.
         required: true
       tags:
-      - events
+      - Events
       security:
       - jwtAuth: []
       - {}
@@ -363,6 +384,9 @@ paths:
           description: ''
     put:
       operationId: events_update
+      description: Replace all editable fields for one event owned by the current
+        organizer.
+      summary: Update event
       parameters:
       - in: path
         name: id
@@ -371,7 +395,7 @@ paths:
         description: A unique integer value identifying this event.
         required: true
       tags:
-      - events
+      - Events
       requestBody:
         content:
           application/json:
@@ -395,6 +419,8 @@ paths:
           description: ''
     patch:
       operationId: events_partial_update
+      description: Update selected fields for one event owned by the current organizer.
+      summary: Partially update event
       parameters:
       - in: path
         name: id
@@ -403,7 +429,7 @@ paths:
         description: A unique integer value identifying this event.
         required: true
       tags:
-      - events
+      - Events
       requestBody:
         content:
           application/json:
@@ -426,6 +452,8 @@ paths:
           description: ''
     delete:
       operationId: events_destroy
+      description: Delete one event owned by the current organizer.
+      summary: Delete event
       parameters:
       - in: path
         name: id
@@ -434,7 +462,7 @@ paths:
         description: A unique integer value identifying this event.
         required: true
       tags:
-      - events
+      - Events
       security:
       - jwtAuth: []
       responses:
@@ -443,6 +471,8 @@ paths:
   /api/events/{id}/register/:
     post:
       operationId: events_register_create
+      description: Register the authenticated attendee for a published event.
+      summary: Register for event
       parameters:
       - in: path
         name: id
@@ -451,7 +481,7 @@ paths:
         description: A unique integer value identifying this event.
         required: true
       tags:
-      - events
+      - Events
       security:
       - jwtAuth: []
       responses:
@@ -463,6 +493,9 @@ paths:
           description: Registration created successfully
     delete:
       operationId: events_register_destroy
+      description: Cancel the authenticated attendee's registration for a published
+        event.
+      summary: Cancel event registration
       parameters:
       - in: path
         name: id
@@ -471,7 +504,7 @@ paths:
         description: A unique integer value identifying this event.
         required: true
       tags:
-      - events
+      - Events
       security:
       - jwtAuth: []
       responses:
@@ -484,8 +517,11 @@ paths:
   /api/health/:
     get:
       operationId: health_retrieve
+      description: Return a simple status payload confirming that the EventHub API
+        is running.
+      summary: Check API health
       tags:
-      - health
+      - Health
       security:
       - jwtAuth: []
       - {}

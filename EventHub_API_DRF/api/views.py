@@ -26,6 +26,9 @@ from .services import register_for_event, cancel_registration
 class HealthAPIView(APIView):
 
     @extend_schema(
+        tags=["Health"],
+        summary="Check API health",
+        description="Return a simple status payload confirming that the EventHub API is running.",
         responses=inline_serializer(
             name="HealthResponse",
             fields={
@@ -43,6 +46,38 @@ class HealthAPIView(APIView):
         )
 
 
+@extend_schema_view(
+    list=extend_schema(
+        tags=["Sessions"],
+        summary="Get event sessions",
+        description="Return sessions that belong to the selected event.",
+    ),
+    create=extend_schema(
+        tags=["Sessions"],
+        summary="Create event session",
+        description="Create a new session for the selected event.",
+    ),
+    retrieve=extend_schema(
+        tags=["Sessions"],
+        summary="Get event session",
+        description="Return details for one session from the selected event.",
+    ),
+    update=extend_schema(
+        tags=["Sessions"],
+        summary="Update event session",
+        description="Replace all editable fields for one session from the selected event.",
+    ),
+    partial_update=extend_schema(
+        tags=["Sessions"],
+        summary="Partially update event session",
+        description="Update selected fields for one session from the selected event.",
+    ),
+    destroy=extend_schema(
+        tags=["Sessions"],
+        summary="Delete event session",
+        description="Delete one session from the selected event.",
+    ),
+)
 class SessionViewSet(ModelViewSet):
     queryset = Session.objects.all()
     serializer_class = SessionSerializer
@@ -55,6 +90,12 @@ class SessionViewSet(ModelViewSet):
 
 @extend_schema_view(
     list=extend_schema(
+        tags=["Events"],
+        summary="Get events",
+        description=(
+            "Return events visible to the current user. Anonymous users and attendees "
+            "see published events, while organizers see their own events."
+        ),
         parameters=[
             OpenApiParameter(
                 name="ordering",
@@ -63,7 +104,32 @@ class SessionViewSet(ModelViewSet):
                 description="Order by starts_at or title. Prefix with '-' for descending order.",
             ),
         ]
-    )
+    ),
+    create=extend_schema(
+        tags=["Events"],
+        summary="Create event",
+        description="Create a new event. The requester must be an organizer.",
+    ),
+    retrieve=extend_schema(
+        tags=["Events"],
+        summary="Get event",
+        description="Return details for one event visible to the current user.",
+    ),
+    update=extend_schema(
+        tags=["Events"],
+        summary="Update event",
+        description="Replace all editable fields for one event owned by the current organizer.",
+    ),
+    partial_update=extend_schema(
+        tags=["Events"],
+        summary="Partially update event",
+        description="Update selected fields for one event owned by the current organizer.",
+    ),
+    destroy=extend_schema(
+        tags=["Events"],
+        summary="Delete event",
+        description="Delete one event owned by the current organizer.",
+    ),
 )
 class EventViewSet(ModelViewSet):
     queryset = Event.objects.all()
@@ -123,6 +189,9 @@ class EventViewSet(ModelViewSet):
         return [IsOrganizer(), IsEventOwner()]
 
     @extend_schema(
+        tags=["Events"],
+        summary="Register for event",
+        description="Register the authenticated attendee for a published event.",
         request=None,
         methods=["POST"],
         responses={
@@ -141,6 +210,9 @@ class EventViewSet(ModelViewSet):
         },
     )
     @extend_schema(
+        tags=["Events"],
+        summary="Cancel event registration",
+        description="Cancel the authenticated attendee's registration for a published event.",
         request=None,
         methods=["DELETE"],
         responses={

@@ -38,8 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'rest_framework',
+    'django_celery_results',
+    'django_celery_beat',
     'django_filters',
+
+    'rest_framework',
     'drf_spectacular',
 
     'api.apps.ApiConfig',
@@ -138,8 +141,7 @@ MAILERS = {
 }
 
 
-# Frameworks
-
+# ===== Frameworks =======
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
@@ -151,11 +153,18 @@ REST_FRAMEWORK = {
     "EXCEPTION_HANDLER": "api.exception_handlers.custom_exception_handler",
 }
 
-AUTH_USER_MODEL = "accounts.User"
 
-
+# ====== Something ========
 SPECTACULAR_SETTINGS = {
     "TITLE": "EventHub API",
     "DESCRIPTION": "API for events, sessions, registrations and authentication.",
     "VERSION": "1.0.0",
 }
+
+
+AUTH_USER_MODEL = "accounts.User"
+
+
+CELERY_BROKER_URL = "redis://localhost:6379/0"
+CELERY_RESULT_BACKEND = "django-db"
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"

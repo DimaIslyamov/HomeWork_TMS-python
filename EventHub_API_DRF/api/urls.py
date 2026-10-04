@@ -1,13 +1,13 @@
-from accounts.views import RegisterAPIView
+from accounts.views import (
+    DocumentedTokenObtainPairView,
+    DocumentedTokenRefreshView,
+    RegisterAPIView,
+)
 
 from django.urls import path, include
 
 from rest_framework.routers import DefaultRouter
 from rest_framework_nested.routers import NestedDefaultRouter
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
 
 from .views import HealthAPIView, EventViewSet, SessionViewSet
 
@@ -21,8 +21,8 @@ urlpatterns = [
     path("health/", HealthAPIView.as_view()),
 
     path("auth/register/", RegisterAPIView.as_view()),
-    path("auth/token/", TokenObtainPairView.as_view()),
-    path("auth/token/refresh/", TokenRefreshView.as_view()),
+    path("auth/token/", DocumentedTokenObtainPairView.as_view()),
+    path("auth/token/refresh/", DocumentedTokenRefreshView.as_view()),
 
     path("", include(router.urls)),
     path("", include(events_router.urls)),
